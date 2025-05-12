@@ -6,14 +6,15 @@
     <title>Criar Usuário</title>
 </head>
 <body>
-    <form>
+    <form action="criarUsuario.php" method="post">
         <input type="text" name="username" id="username" placeholder="Usuário">
+        <input type="text" name="cpf" id="cpf" placeholder="CPF">
         <input type="password" name="password" id="password" placeholder="Senha">
         <input type="password" name="repPassword" id="repPassword" placeholder="Repetir Senha">
         <input type="email" name="email" id="email" placeholder="Email">
         <button type="submit">Registrar</button>
         <a href="/web/index.html">Voltar</a>
     </form>
-    <script src="criarUsuario.js"></script>
+  
 </body>
 </html>
