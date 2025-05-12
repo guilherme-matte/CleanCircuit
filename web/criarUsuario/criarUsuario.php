@@ -4,13 +4,21 @@ $password = $_POST['password'];
 $repPasword = $_POST['repPassword'];
 $email = $_POST['email'];
 $cpf = $_POST['cpf'];
-echo $cpf;
 $data = [
   'nomeCompleto' => $username,
   'senha' => $password,
   'cpf' => $cpf,
   'email' => $email
 ];
+
+if ($password !== $repPasword) {
+  echo 'As senhas não conferem 
+
+  <br>
+  <a href="criarUsuario.html">Voltar</a>';
+  exit;
+}
+
 $payload = json_encode($data);
 
 $url = 'http://localhost:8080/user';
