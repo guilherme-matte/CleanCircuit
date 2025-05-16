@@ -37,9 +37,9 @@ public class MailService {
                 "Sua nova senha é:" + senhaGerada;
         sendEmail(email, "Reset de senha", text);
     }
-    public void enviarEmailBoasVindas(String email,UserEntity usuario){
-        String text="Boas vindas "+usuario.getNomeCompleto()+" sua conta foi criada com sucesso!";
 
-        sendEmail(email,);
+    public void enviarEmailBoasVindas(String email, String nome) {
+        String text = "Boas vindas " + nome + " sua conta foi criada com sucesso!";
+        sendEmail(email, "Conta criada com sucesso!", text);
     }
 }

@@ -44,6 +44,7 @@ public class LoginController {
         if (email == null) {
             return response.resposta(null, "campo email vazio", 404);
         }
+        UserEntity usuario = userRepository.findByEmail(email);
 
     }
 }

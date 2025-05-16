@@ -4,6 +4,7 @@ import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
+import CC.CleanCircuit.services.MailService;
 import CC.CleanCircuit.services.SenhaService;
 import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SenhaService senhaService;
+    @Autowired
+    private MailService mailService;
 
     @GetMapping("/user/{cpf}")
     public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String cpf) {
@@ -64,7 +67,9 @@ public class UserController {
         }
         user.setSenha(senhaService.hashSenha(user.getSenha()));
         userRepository.save(user);
+        mailService.enviarEmailBoasVindas(user.getEmail(), user.getNomeCompleto());
         return response.resposta(user, "Cadastro realizado com sucesso", 200);
+
     }
 
 }
