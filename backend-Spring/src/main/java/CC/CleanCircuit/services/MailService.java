@@ -1,11 +1,9 @@
 package CC.CleanCircuit.services;
 
-import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,13 +23,7 @@ public class MailService {
         mailSender.send(message);
     }
 
-    public void enviarEmailResetSenha(String email, UserEntity usuario) {
-        String senhaGerada = SenhaService.gerarSenha();
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        usuario.setSenhaTemporaria(passwordEncoder.encode(senhaGerada));
-        usuario.setSenhaTemporariaBoolean(true);
-
-        userRepository.save(usuario);
+    public void enviarEmailResetSenha(String email, String senhaGerada) {
 
         String text = "Senha resetada com sucesso </br>" +
                 "Sua nova senha é:" + senhaGerada;

@@ -2,17 +2,19 @@ package CC.CleanCircuit.services;
 
 import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
-import CC.CleanCircuit.response.ApiResponse;
-import CC.CleanCircuit.response.ApiResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SenhaService senhaService;
+    @Autowired
+    private MailService mailService;
+
 
     public boolean verificarEmail(String email) {
         UserEntity emailEncontrado = userRepository.findByEmail(email);
@@ -22,5 +24,15 @@ public class UserService {
         } else {
             return false;
         }
+    }
+
+    public void resetarSenha(UserEntity usuario) {
+        String senhaTemporaria = SenhaService.gerarSenha();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        System.out.println(senhaTemporaria);
+        usuario.setSenhaTemporaria(passwordEncoder.encode(senhaTemporaria));
+        usuario.setSenhaTemporariaBoolean(true);
+        mailService.enviarEmailResetSenha(usuario.getEmail(), senhaTemporaria);
+        userRepository.save(usuario);
     }
 }

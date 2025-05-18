@@ -6,11 +6,13 @@ import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
 import CC.CleanCircuit.services.SenhaService;
+import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -23,28 +25,47 @@ public class LoginController {
     private ApiResponse response;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponseDTO> verificarLogin(@RequestBody LoginDTO dto) {
         if (dto == null) {
             return response.resposta(null, "Campos vazios", 404);
         }
-        UserEntity user = userRepository.findByCpf(dto.getUsername());
+        UserEntity user = userRepository.findByEmail(dto.getEmail());
 
-
-        if (user == null || !senhaServices.verificarSenha(dto.getPassword(), user.getSenha()) || user.isSenhaTemporariaBoolean() && senhaServices.verificarSenha(dto.getPassword(), user.getSenhaTemporaria())) {
-            return response.resposta(null, "Usuario ou senha incorreto(s)", 404);
+        if (user.isSenhaTemporariaBoolean() && senhaServices.verificarSenha(dto.getPassword(), user.getSenhaTemporaria())) {
+            user.setSenhaTemporaria(null);
+            user.setSenhaTemporariaBoolean(false);
+            userRepository.save(user);
+            return response.resposta(null, "Login realizado com sucesso, crie uma nova senha", 200);
         }
-        return response.resposta(null, "Login realizado com sucesso", 200);
+
+        if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
+            if (user.isSenhaTemporariaBoolean()) {
+                user.setSenhaTemporaria(null);
+                user.setSenhaTemporariaBoolean(false);
+                userRepository.save(user);
+            }
+            return response.resposta(null, "Login realizado com sucesso", 200);
+
+        }
+        return response.resposta(null, "Usuario ou senha incorreto(s)", 404);
     }
 
-    @GetMapping("/reset-password/{email}")
+    @PostMapping("/reset-password/{email}")
     public ResponseEntity<ApiResponseDTO> resetSenha(@PathVariable String email) {
 
         if (email == null) {
             return response.resposta(null, "campo email vazio", 404);
         }
         UserEntity usuario = userRepository.findByEmail(email);
+        if (usuario == null) {
 
+            return response.resposta(null, "Email não encontrado", 404);
+        }
+        userService.resetarSenha(usuario);
+        return response.resposta(null, "Email enviado com sucesso!", 200);
     }
 }

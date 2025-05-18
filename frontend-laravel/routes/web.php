@@ -1,7 +1,7 @@
 <?php
+use App\Http\Controllers\AuthController;
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/login', [AuthController::class, 'showLogin']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/redefinir-senha', [AuthController::class, 'showReset']);
+Route::post('/redefinir-senha', [AuthController::class, 'reset']);
