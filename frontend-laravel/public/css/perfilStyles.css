@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Perfil</title>
-    <link rel="stylesheet" href="style.css"> <!-- se quiser separar depois -->
-    <style>
-        /* Incluindo o CSS inline por simplicidade aqui */
-
-        body {
+  body {
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
@@ -106,53 +96,3 @@
             align-self: center;
             margin-bottom: 10px;
         }
-    </style>
-</head>
-
-<body>
-
-    <div class="menuLateral">
-        <h2>Menu</h2>
-        <a href="/menu">Página Inicial</a>
-        <a href="/perfil">Editar Perfil</a>
-        <a href="/logout">Sair</a>
-    </div>
-
-    <div class="conteudo">
-        <div class="formContainer">
-            <h1>Editar Perfil</h1>
-            <form action="/perfil/save" method="post" enctype="multipart/form-data">
-                @csrf
-
-                <img id="preview" src="#" alt="Preview da imagem">
-
-                <input type="file" name="imagem" id="imagem">
-                <input type="text" name="nomeCompleto" placeholder="Nome completo" value="{{ $perfil['nomeCompleto'] ?? '' }}" required>
-                <input type="email" name="email" placeholder="E-mail" value="{{ $perfil['email'] ?? '' }}" required>
-                <button type="submit">Salvar</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        const inputImagem = document.getElementById('imagem');
-        const preview = document.getElementById('preview');
-
-        inputImagem.addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
-
-</body>
-
-</html>

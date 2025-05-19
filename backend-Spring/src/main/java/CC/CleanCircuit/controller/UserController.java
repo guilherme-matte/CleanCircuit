@@ -8,9 +8,18 @@ import CC.CleanCircuit.services.MailService;
 import CC.CleanCircuit.services.SenhaService;
 import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -24,6 +33,38 @@ public class UserController {
     private SenhaService senhaService;
     @Autowired
     private MailService mailService;
+
+
+    @PutMapping(value = "/user/{email}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseDTO> uploadImagemPerfil(@PathVariable String email, @RequestPart("file") MultipartFile file) {
+        UserEntity user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            return response.resposta(null, "Usuário não encontrado", 404);
+        }
+
+        if (file == null || file.isEmpty()) {
+            return response.resposta(null, "Arquivo não enviado", 400);
+        }
+
+        try {
+
+
+            String uploadDir = "uploads";
+
+            Files.createDirectories(Paths.get(uploadDir));
+
+            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            Path path = Paths.get(uploadDir).resolve(filename);
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            user.setUrlProfileImage("/uploads/" + filename);
+            userRepository.save(user);
+            return response.resposta(user, "Imagem alterada com sucesso", 200);
+        } catch (IOException e) {
+            return response.resposta(null, "Erro ao salvar imagem: " + e.getMessage(), 500);
+        }
+    }
 
     @GetMapping("/user/{email}")
     public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String email) {

@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "tb_usuarios")
 public class UserEntity {
@@ -20,6 +22,12 @@ public class UserEntity {
     private String email;
     @Column(nullable = false)
     private String senha;
+
+    private Date date;
+
+    private String telefone;
+
+    private String urlProfileImage;
 
     private String senhaTemporaria;
 
@@ -79,5 +87,29 @@ public class UserEntity {
 
     public void setSenhaTemporariaBoolean(boolean senhaTemporariaBoolean) {
         this.senhaTemporariaBoolean = senhaTemporariaBoolean;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getUrlProfileImage() {
+        return urlProfileImage;
+    }
+
+    public void setUrlProfileImage(String urlProfileImage) {
+        this.urlProfileImage = urlProfileImage;
     }
 }
