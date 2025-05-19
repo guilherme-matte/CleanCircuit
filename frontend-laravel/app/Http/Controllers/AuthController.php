@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 
 class AuthController extends Controller
 {
@@ -14,18 +16,24 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $response = Http::post(env('API_URL') . '/login', [
             'email' => $request->email,
             'password' => $request->password,
         ]);
 
         if ($response->successful()) {
-
-            return redirect('/login')->with('success','Login realizado com sucesso');
+            session([
+                'email' => $request->email,
+                'logado' => true
+            ]);
+            return redirect('/menu')->with('success', 'Login realizado com sucesso');
         }
 
         return redirect('/login')->with('error', 'Credenciais inválidas');
     }
+
+
 
     public function showReset()
     {
@@ -44,5 +52,10 @@ class AuthController extends Controller
         }
 
         return back()->with('error', 'Erro ao enviar email');
+    }
+    public function logout()
+    {
+        session()->flush();
+        return redirect('/login');
     }
 }

@@ -20,13 +20,13 @@
 
             <div>
 
-                <input type="email" id="email" name="email" placeholder="email" required>
+                <input type="email" id="email" name="email" placeholder="E-mail" required>
             </div>
             <div>
 
-                <input type="password" id="password" name="password" placeholder="senha" required>
+                <input type="password" id="password" name="password" placeholder="Senha" required>
             </div>
-            <button type="submit">LOGIN</button>
+            <button type="submit">Login</button>
             <p><a href="/redefinir-senha">Esqueci minha senha</a></p>
         </form>
         <div class="divMensagem">
@@ -44,5 +44,4 @@
     </div>
 
 </body>
-
 </html>
