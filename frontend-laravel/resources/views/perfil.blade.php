@@ -19,9 +19,8 @@
     </form>
     @csrf
     <input type="text" name="nomeCompleto" id="nomeCompleto" placeholder="Nome Completo" required
-        value="{{ $perfil['nome'] ?? '' }}">
-    <input type="email" name="email" id="email" placeholder="E-mail" required
-        value="{{ $perfil['email'] ?? '' }}">
+        value="{{ $perfil["nomeCompleto"] ?? '' }}">
+    <input type="email" name="email" id="email" placeholder="E-mail" required value="{{ $perfil['email'] ?? '' }}">
     <button type="submit">Salvar</button>
 </body>
 

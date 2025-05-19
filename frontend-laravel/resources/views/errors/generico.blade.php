@@ -18,6 +18,15 @@
             margin: 0;
         }
 
+        a {
+            color: #66d9ef;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #3aa4b9;
+        }
+
         h1 {
             font-size: 5rem;
             color: #e53e3e;
@@ -52,10 +61,11 @@
     <div class="container">
         <h1>Erro {{ $status }}</h1>
         <p class="emoji">{{ $message }} 😞</p>
+        volta para a <a href="{{ url()->previous() }}">página inicial</a> ou entre em contato com o suporte.
         @if (app()->environment('local'))
             <p><strong>{{ $exception->getMessage() }}</strong></p>
         @endif
-    </div>
+        </div>
 </body>
 
 </html>

@@ -25,14 +25,14 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
-    @GetMapping("/user/{cpf}")
-    public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String cpf) {
-        if (cpf.isEmpty()) {
-            return response.resposta(null, "CPF vazio", 404);
+    @GetMapping("/user/{email}")
+    public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String email) {
+        if (email.isEmpty()) {
+            return response.resposta(null, "Email vazio", 404);
         }
-        UserEntity user = userRepository.findByCpf(cpf);
+        UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            return response.resposta(null, "Usuario não encontrado", 404);
+            return response.resposta(null, "Usuário não encontrado", 404);
         }
         return response.resposta(user, "Usuário encontrado com sucesso", 200);
     }

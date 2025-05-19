@@ -12,4 +12,5 @@ Route::get('/menu', [MenuController::class, 'showMenu']);
 
 use App\Http\Controllers\PerfilController;
 Route::get('/perfil', [PerfilController::class, 'showPerfil']);
+Route::get('/perfil', [PerfilController::class, 'carregarPerfil']);
 Route::post('/perfil/save', [PerfilController::class, 'salvarPerfil']);
