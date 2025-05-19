@@ -19,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -54,7 +53,13 @@ public class UserController {
 
             Files.createDirectories(Paths.get(uploadDir));
 
-            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            String originalFilename = file.getOriginalFilename(); // ex: "foto.jpg"
+            String extension = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            String filename = user.getCpf() + extension;
             Path path = Paths.get(uploadDir).resolve(filename);
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
@@ -83,9 +88,10 @@ public class UserController {
         UserEntity userAtual = userRepository.findByCpf(user.getCpf());
 
         userAtual.setNomeCompleto(user.getNomeCompleto());
-
+        userAtual.setDate(user.getDate());
+        userAtual.setTelefone(user.getTelefone());
         if (!userService.verificarEmail(user.getEmail())) {
-            return response.resposta(user.getEmail(), "Email já cadastrado", 404);
+            return response.resposta(user.getEmail(), "Email inválido", 404);
 
         } else {
             userAtual.setEmail(user.getEmail());
