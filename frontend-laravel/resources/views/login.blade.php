@@ -1,31 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
     <title>Login</title>
 </head>
+
 <body>
-    <h1>Login</h1>
-    @if (session('error'))
-        <div style="color: red;">
-            {{ session('error') }}
+    <div class="divLogin">
+
+
+        <form action="/login" method="post">
+            @csrf
+            <h1>Login</h1>
+
+            <div>
+
+                <input type="email" id="email" name="email" placeholder="email" required>
+            </div>
+            <div>
+
+                <input type="password" id="password" name="password" placeholder="senha" required>
+            </div>
+            <button type="submit">LOGIN</button>
+            <p><a href="/redefinir-senha">Esqueci minha senha</a></p>
+        </form>
+        <div class="divMensagem">
+            @if (session('error'))
+                <div id="divError">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if (session('success'))
+                <div id="divSuccess">
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
-    @endif
-    <form action="/login" method="post">
-    @csrf
-    
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Login</button>
-        <p><a href="/redefinir-senha">Esqueci minha senha</a></p>
-    </form>
+    </div>
+
 </body>
+
 </html>

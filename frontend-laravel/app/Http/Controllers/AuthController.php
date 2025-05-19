@@ -20,9 +20,8 @@ class AuthController extends Controller
         ]);
 
         if ($response->successful()) {
-            $token = $response['token'];
-            session(['token' => $token]);
-            return redirect('/usuarios');
+
+            return redirect('/login')->with('success','Login realizado com sucesso');
         }
 
         return redirect('/login')->with('error', 'Credenciais inválidas');
