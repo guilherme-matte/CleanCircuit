@@ -33,8 +33,7 @@
                 <h1 class="text-center text-2xl underline">Editar Perfil</h1>
                 <form action="/perfil/save" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
                     @csrf
-
-                    <img id="preview" src="#" alt="Preview da imagem"
+                    <img id="preview" src="../../../backend-Spring/uploads/{{ $perfil['cpf'] }}.jpg" alt="Preview da imagem"
                         class="max-w-[120px] max-h-[120px] rounded-full mx-auto mb-2 hidden" />
 
                     <label
@@ -51,7 +50,7 @@
                     <input type="email" name="email" placeholder="E-mail" value="{{ $perfil['email'] ?? '' }}"
                         required
                         class="bg-transparent border-b border-gray-300 h-11 text-[#f8f8f2] text-base placeholder-gray-400 outline-none" />
-                    <input type="date" name="data" placeholder="Data de nascimento"
+                    <input type="date" name="date" placeholder="Data de nascimento"
                         value="{{ $perfil['date'] ?? '' }}" required
                         class="bg-transparent border-b border-gray-300 h-11 text-[#f8f8f2] text-base placeholder-gray-400 outline-none" />
                     <input type="tel" name="telefone" placeholder="(--) (- ---- ----)"

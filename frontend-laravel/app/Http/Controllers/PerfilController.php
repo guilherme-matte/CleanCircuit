@@ -32,9 +32,11 @@ class PerfilController extends Controller
     }
     public function salvarPerfil(Request $request)
     {
-        $response = Http::put(env('API_URL') . '/user', [
+        $response = Http::put(env('API_URL') . '/user/' . urlencode($request->email), [
             'email' => $request->email,
             'nomeCompleto' => $request->nomeCompleto,
+            'telefone' => $request->telefone,
+            'date' => $request->date,
         ]);
         if ($response->successful()) {
             return redirect('/perfil')->with('success', 'Salvo com sucesso');

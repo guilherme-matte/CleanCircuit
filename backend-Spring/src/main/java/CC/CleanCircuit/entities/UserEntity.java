@@ -1,11 +1,7 @@
 package CC.CleanCircuit.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -15,14 +11,19 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nomeCompleto;
+
     @Column(unique = true, nullable = false)
     private String cpf;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String senha;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
 
     private String telefone;

@@ -83,19 +83,14 @@ public class UserController {
         return response.resposta(user, "Usuário encontrado com sucesso", 200);
     }
 
-    @PutMapping("/user")
-    public ResponseEntity<ApiResponseDTO> atualizarUsuario(@RequestBody UserEntity user) {
-        UserEntity userAtual = userRepository.findByCpf(user.getCpf());
-
+    @PutMapping("/user/{email}")
+    public ResponseEntity<ApiResponseDTO> atualizarUsuario(@RequestBody UserEntity user, @PathVariable String email) {
+        UserEntity userAtual = userRepository.findByEmail(email);
         userAtual.setNomeCompleto(user.getNomeCompleto());
         userAtual.setDate(user.getDate());
         userAtual.setTelefone(user.getTelefone());
-        if (!userService.verificarEmail(user.getEmail())) {
-            return response.resposta(user.getEmail(), "Email inválido", 404);
+        userAtual.setEmail(user.getEmail());
 
-        } else {
-            userAtual.setEmail(user.getEmail());
-        }
         userRepository.save(userAtual);
         return response.resposta(userAtual, "Usuário alterado com sucesso", 200);
     }
