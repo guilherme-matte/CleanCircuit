@@ -3,6 +3,7 @@ package CC.CleanCircuit.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.io.File;
 import java.util.Date;
 
 @Entity

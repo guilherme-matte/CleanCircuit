@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Editar Perfil</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/imask"></script>
 
     <link rel="stylesheet" href="style.css"> <!-- se quiser separar depois -->
     <style>
@@ -30,12 +31,18 @@
 
         <div class="conteudo flex-1 bg-[#5a4d7a] p-10 flex justify-center items-center">
             <div class="formContainer bg-[#2e2e3e] p-8 rounded-xl w-full max-w-md flex flex-col gap-5">
+                @if (session('error'))
+                    <label class="bg-red-400 text-center">{{ session('error') }}</label>
+                @elseif (session('success'))
+                    <label class="bg-green-400 text-center">{{ session('success') }}</label>
+                @endif
                 <h1 class="text-center text-2xl underline">Editar Perfil</h1>
                 <form action="/perfil/save" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
                     @csrf
-                    <img id="preview" src="../../../backend-Spring/uploads/{{ $perfil['cpf'] }}.jpg" alt="Preview da imagem"
-                        class="max-w-[120px] max-h-[120px] rounded-full mx-auto mb-2 hidden" />
 
+                    <img id="preview"
+                        src="{{ env('API_URL') . (session('hasProfileImage') ? '/' . $perfil['urlProfileImage'] : '/uploads/default.png') }}"
+                        alt="Preview da imagem" class="max-w-[180px] max-h-[180px] rounded-full mx-auto mb-2" />
                     <label
                         class="inline-block bg-indigo-600 text-white rounded px-4 py-2 cursor-pointer hover:bg-indigo-700 transition">
                         Selecionar arquivo
@@ -53,7 +60,7 @@
                     <input type="date" name="date" placeholder="Data de nascimento"
                         value="{{ $perfil['date'] ?? '' }}" required
                         class="bg-transparent border-b border-gray-300 h-11 text-[#f8f8f2] text-base placeholder-gray-400 outline-none" />
-                    <input type="tel" name="telefone" placeholder="(--) (- ---- ----)"
+                    <input type="tel" id="telefone" name="telefone" placeholder="(--) (- ---- ----)"
                         value="{{ $perfil['telefone'] ?? '' }}" required
                         class="bg-transparent border-b border-gray-300 h-11 text-[#f8f8f2] text-base placeholder-gray-400 outline-none" />
                     <button type="submit"
@@ -65,6 +72,12 @@
         </div>
 
         <script>
+            var telefoneInput = document.getElementById('telefone');
+            var maskOptions = {
+                mask: '(00) 0 0000-0000'
+            };
+            IMask(telefoneInput, maskOptions);
+
             const inputImagem = document.getElementById('imagem');
             const preview = document.getElementById('preview');
             const fileNameSpan = document.getElementById('fileName');

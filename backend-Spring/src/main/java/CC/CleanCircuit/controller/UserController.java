@@ -1,5 +1,6 @@
 package CC.CleanCircuit.controller;
 
+import CC.CleanCircuit.dtos.UserDTO;
 import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +36,7 @@ public class UserController {
     private MailService mailService;
 
 
-    @PutMapping(value = "/user/{email}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/{email}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO> uploadImagemPerfil(@PathVariable String email, @RequestPart("file") MultipartFile file) {
         UserEntity user = userRepository.findByEmail(email);
 
@@ -59,11 +61,11 @@ public class UserController {
             if (originalFilename != null && originalFilename.contains(".")) {
                 extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             }
-            String filename = user.getCpf() + extension;
+            String filename = user.getCpf() + ".png";
             Path path = Paths.get(uploadDir).resolve(filename);
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            user.setUrlProfileImage("uploads/" + filename);
 
-            user.setUrlProfileImage("/uploads/" + filename);
             userRepository.save(user);
             return response.resposta(user, "Imagem alterada com sucesso", 200);
         } catch (IOException e) {
@@ -71,8 +73,20 @@ public class UserController {
         }
     }
 
+
+    @DeleteMapping("/user/{email}/upload")
+    public ResponseEntity<ApiResponseDTO> deletarImagem(@PathVariable String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            return response.resposta(null, "Usuario não encontrado", 404);
+        }
+        userService.deletarImagemFunc(user);
+        return response.resposta(user, "Imagem deletada com sucesso", 200);
+    }
+
     @GetMapping("/user/{email}")
     public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String email) {
+        UserDTO userDTO = new UserDTO();
         if (email.isEmpty()) {
             return response.resposta(null, "Email vazio", 404);
         }
@@ -80,7 +94,14 @@ public class UserController {
         if (user == null) {
             return response.resposta(null, "Usuário não encontrado", 404);
         }
-        return response.resposta(user, "Usuário encontrado com sucesso", 200);
+        userDTO.setUserEntity(user);
+        if (user.getUrlProfileImage() != null) {
+            File file = new File(user.getUrlProfileImage());
+            userDTO.setHasProfileImage(file.exists());
+        }
+
+
+        return response.resposta(userDTO, "Usuário encontrado com sucesso", 200);
     }
 
     @PutMapping("/user/{email}")

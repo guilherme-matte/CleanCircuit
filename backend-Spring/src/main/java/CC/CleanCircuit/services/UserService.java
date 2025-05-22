@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 @Service
 public class UserService {
     @Autowired
@@ -34,5 +38,15 @@ public class UserService {
         usuario.setSenhaTemporariaBoolean(true);
         mailService.enviarEmailResetSenha(usuario.getEmail(), senhaTemporaria);
         userRepository.save(usuario);
+    }
+
+    public void deletarImagemFunc(UserEntity user) {
+        try {
+            Files.deleteIfExists(Path.of(user.getUrlProfileImage()));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        user.setUrlProfileImage(null);
+        userRepository.save(user);
     }
 }
