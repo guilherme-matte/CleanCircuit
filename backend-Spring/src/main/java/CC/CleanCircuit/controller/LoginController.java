@@ -5,12 +5,12 @@ import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
+import CC.CleanCircuit.services.LoginService;
 import CC.CleanCircuit.services.SenhaService;
 import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +27,8 @@ public class LoginController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LoginService loginService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDTO> verificarLogin(@RequestBody LoginDTO dto) {
@@ -39,7 +41,7 @@ public class LoginController {
             user.setSenhaTemporaria(null);
             user.setSenhaTemporariaBoolean(false);
             userRepository.save(user);
-            return response.resposta(null, "Login realizado com sucesso, crie uma nova senha", 200);
+            return response.resposta(null, "Login realizado com sucesso, crie uma nova senha.", 200);
         }
 
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
@@ -52,6 +54,11 @@ public class LoginController {
 
         }
         return response.resposta(null, "Usuario ou senha incorreto(s)", 404);
+    }
+
+    @PostMapping("/new-password")
+    public ResponseEntity<ApiResponseDTO> novaSenha(@RequestBody LoginDTO dto) {
+        return loginService.criarNovaSenha(dto.getEmail(), dto.getPassword());
     }
 
     @PostMapping("/reset-password/{email}")

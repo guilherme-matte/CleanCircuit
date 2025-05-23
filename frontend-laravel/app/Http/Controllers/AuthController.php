@@ -2,16 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\ConnectionException;
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
         return view('login');
+    }
+
+    public function showNovaSenha()
+    {
+        if (!session('logado')) {
+            return redirect('/login')->with('error', 'É preciso estar logado');
+        }
+        return view('nova-senha');
+    }
+    public function showReset()
+    {
+        return view('reset');
+    }
+
+    public function novaSenha(Request $request)
+    {
+        $senha = $request->input('novaSenha');
+        $senhaConf = $request->input('novaSenhaConf');
+
+        if ($senha != $senhaConf) {
+            return redirect('/criar-nova-senha')->with('error', 'Senhas não conferem, tente novamente.');
+        }
+
+        $response = Http::post(env('API_URL') . '/new-password', [
+            'email' => session('email'),
+            'password' => $senha
+        ]);
+        $data = $response->json();
+        if ($response->successful()) {
+            return redirect('/menu')->with('success', $data['status_msg']);
+        }
+        return redirect('/criar-nova-senha')->with('error', $data['status_msg']);
+
     }
 
     public function login(Request $request)
@@ -21,24 +52,23 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);
-
+        $data = $response->json();
         if ($response->successful()) {
+
             session([
                 'email' => $request->email,
                 'logado' => true
             ]);
-            return redirect('/menu')->with('success', 'Login realizado com sucesso');
+            if ($data['status_msg'] == "Login realizado com sucesso, crie uma nova senha.") {
+                return redirect('/criar-nova-senha')->with('success', $data['status_msg']);
+
+            }
+            return redirect('/menu')->with('success', $data['status_msg']);
         }
 
-        return redirect('/login')->with('error', 'Credenciais inválidas');
+        return redirect('/login')->with('error', $data['status_msg']);
     }
 
-
-
-    public function showReset()
-    {
-        return view('reset');
-    }
 
     public function reset(Request $request)
     {
@@ -56,6 +86,6 @@ class AuthController extends Controller
     public function logout()
     {
         session()->flush();
-        return redirect('/login');
+        return redirect('/login')->with('success', 'Log-out realizado com sucesso. Volte sempre!');
     }
 }
