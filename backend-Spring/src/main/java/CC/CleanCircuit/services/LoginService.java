@@ -21,8 +21,12 @@ public class LoginService {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
+
+
+    public LoginService(MailService mailService) {
+        this.mailService = mailService;
+    }
 
     public ResponseEntity<ApiResponseDTO> criarNovaSenha(String token, String novaSenha) {
         UserEntity user = userRepository.findByResetToken(token);

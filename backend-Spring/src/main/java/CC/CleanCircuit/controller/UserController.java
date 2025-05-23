@@ -32,8 +32,11 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SenhaService senhaService;
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
+
+    public UserController(MailService mailService) {
+        this.mailService = mailService;
+    }
 
 
     @PostMapping(value = "/user/{email}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -116,12 +119,6 @@ public class UserController {
         return response.resposta(userAtual, "Usuário alterado com sucesso", 200);
     }
 
-    @DeleteMapping("/user/{id}")
-    public ResponseEntity<ApiResponseDTO> deletarUsuario(@PathVariable Long id) {
-        userRepository.deleteById(id);
-        return response.resposta(null, "Usuário deletado com sucesso", 200);
-
-    }
 
     @PostMapping("/user")
     public ResponseEntity<ApiResponseDTO> criarUsuario(@RequestBody UserEntity user) {
@@ -135,4 +132,8 @@ public class UserController {
 
     }
 
+    @DeleteMapping("/user/{email}")
+    public ResponseEntity<ApiResponseDTO> deleteUser(@PathVariable String email) {
+        return userService.deletarUser(email);
+    }
 }
