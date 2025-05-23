@@ -63,10 +63,8 @@
         <p class="emoji">{{ $message }} 😞</p>
         volta para a <a href="{{ url()->previous() }}">última página</a>
         ou para o <a href="/menu">menu</a>
-        @if (app()->environment('local'))
-            <p><strong>{{ $exception->getMessage() }}</strong></p>
-        @endif
-        </div>
+        <p><strong>{{ $exception->getMessage() }}</strong></p>
+    </div>
 </body>
 
 </html>
