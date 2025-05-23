@@ -1,6 +1,7 @@
 package CC.CleanCircuit.controller;
 
 import CC.CleanCircuit.dtos.LoginDTO;
+import CC.CleanCircuit.dtos.NewPasswordDTO;
 import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
@@ -14,8 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class LoginController {
 
 
@@ -57,8 +59,8 @@ public class LoginController {
     }
 
     @PostMapping("/new-password")
-    public ResponseEntity<ApiResponseDTO> novaSenha(@RequestBody LoginDTO dto) {
-        return loginService.criarNovaSenha(dto.getEmail(), dto.getPassword());
+    public ResponseEntity<ApiResponseDTO> novaSenha(@RequestBody NewPasswordDTO dto) {
+        return loginService.criarNovaSenha(dto.getToken(), dto.getNewPassword());
     }
 
     @PostMapping("/reset-password/{email}")
@@ -72,7 +74,7 @@ public class LoginController {
 
             return response.resposta(null, "Email não encontrado", 404);
         }
-        userService.resetarSenha(usuario);
+        loginService.gerarTokenResetSenha(usuario);
         return response.resposta(null, "Email enviado com sucesso!", 200);
     }
 }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 public class LoginService {
     @Autowired
@@ -18,15 +21,29 @@ public class LoginService {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MailService mailService;
 
-    public ResponseEntity<ApiResponseDTO> criarNovaSenha(String email, String novaSenha) {
-        UserEntity user = userRepository.findByEmail(email);
-        if (user == null) {
-            return response.resposta(null, "Usuário não encontrado, contato os administradores", 404);
+    public ResponseEntity<ApiResponseDTO> criarNovaSenha(String token, String novaSenha) {
+        UserEntity user = userRepository.findByResetToken(token);
+        if (user == null || user.getResetTokenExpiration().isBefore(LocalDateTime.now())) {
+            return response.resposta(null, "Token inválido ou expirado", 404);
         }
         user.setSenha(senhaService.hashSenha(novaSenha));
+        user.setResetTokenExpiration(null);
+        user.setResetToken(null);
         userRepository.save(user);
-        return response.resposta(user, "Senha alterada com sucesso!", 200);
+        return response.resposta(user, "Senha alterada com sucesso! Faça login novamente.", 200);
     }
 
+    public void gerarTokenResetSenha(UserEntity user) {
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setResetTokenExpiration(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        String link = "http://localhost:8000/criar-nova-senha?token=" + token;
+        mailService.enviarEmailResetSenha(user.getEmail(), link);
+    }
 }
+

@@ -23,10 +23,10 @@ public class MailService {
         mailSender.send(message);
     }
 
-    public void enviarEmailResetSenha(String email, String senhaGerada) {
+    public void enviarEmailResetSenha(String email, String link) {
 
-        String text = "Senha resetada com sucesso </br>" +
-                "Sua nova senha é:" + senhaGerada;
+        String text = "Olá, sua senha pode ser resetada utilizando o seguinte link: " + link;
+
         sendEmail(email, "Reset de senha", text);
     }
 

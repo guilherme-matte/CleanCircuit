@@ -14,9 +14,7 @@ class AuthController extends Controller
 
     public function showNovaSenha()
     {
-        if (!session('logado')) {
-            return redirect('/login')->with('error', 'É preciso estar logado');
-        }
+
         return view('nova-senha');
     }
     public function showReset()
@@ -28,20 +26,22 @@ class AuthController extends Controller
     {
         $senha = $request->input('novaSenha');
         $senhaConf = $request->input('novaSenhaConf');
+        $token = $request->input('token');
 
         if ($senha != $senhaConf) {
             return redirect('/criar-nova-senha')->with('error', 'Senhas não conferem, tente novamente.');
         }
 
         $response = Http::post(env('API_URL') . '/new-password', [
-            'email' => session('email'),
-            'password' => $senha
+            'newPassword' => $senha,
+            'token' => $token,
         ]);
+
         $data = $response->json();
         if ($response->successful()) {
-            return redirect('/menu')->with('success', $data['status_msg']);
+            return redirect('/login')->with('success', $data['status_msg']);
         }
-        return redirect('/criar-nova-senha')->with('error', $data['status_msg']);
+        return redirect('/criar-nova-senha')->with('error', $data['status_msg'] . ' token: ' . $token);
 
     }
 
@@ -76,12 +76,12 @@ class AuthController extends Controller
         $response = Http::post(
             env('API_URL') . '/reset-password/' . $email
         );
-
+        $data = $response;
         if ($response->successful()) {
-            return redirect('/login')->with('success', 'Email de redefinição enviado');
+            return redirect('/login')->with('success', $data['status_msg']);
         }
 
-        return back()->with('error', 'Erro ao enviar email');
+        return back()->with('error', $data['status_msg']);
     }
     public function logout()
     {

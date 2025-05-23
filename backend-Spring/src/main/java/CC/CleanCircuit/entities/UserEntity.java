@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -34,6 +35,25 @@ public class UserEntity {
     private String senhaTemporaria;
 
     private boolean senhaTemporariaBoolean;
+
+    private String resetToken;
+    private LocalDateTime resetTokenExpiration;
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiration() {
+        return resetTokenExpiration;
+    }
+
+    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) {
+        this.resetTokenExpiration = resetTokenExpiration;
+    }
 
     public Long getId() {
         return id;

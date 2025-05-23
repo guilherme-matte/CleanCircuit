@@ -3,7 +3,6 @@ package CC.CleanCircuit.services;
 import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,15 +29,6 @@ public class UserService {
         }
     }
 
-    public void resetarSenha(UserEntity usuario) {
-        String senhaTemporaria = SenhaService.gerarSenha();
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println(senhaTemporaria);
-        usuario.setSenhaTemporaria(passwordEncoder.encode(senhaTemporaria));
-        usuario.setSenhaTemporariaBoolean(true);
-        mailService.enviarEmailResetSenha(usuario.getEmail(), senhaTemporaria);
-        userRepository.save(usuario);
-    }
 
     public void deletarImagemFunc(UserEntity user) {
         try {

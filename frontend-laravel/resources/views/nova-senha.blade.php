@@ -28,6 +28,7 @@
 
         <form action="/criar-nova-senha" method="post" class="flex flex-col gap-4">
             @csrf
+            <input type="hidden" name="token" value="{{ request()->query('token') }}">
 
             <div class="flex flex-col">
                 <label for="novaSenha" class="mb-1 text-gray-300">Digite sua nova senha</label>
