@@ -1,5 +1,6 @@
 package CC.CleanCircuit.services;
 
+import CC.CleanCircuit.dtos.EmailDTO;
 import CC.CleanCircuit.repositories.UserRepository;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class MailService {
     private JavaMailSender mailSender;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailProducer emailProducer;
+
 
     @Async("taskExecutor")
     public void sendEmail(String to, String subject, String text) {
@@ -49,7 +53,7 @@ public class MailService {
                 "        </tr>\n" +
                 "        <tr>\n" +
                 "          <td align=\"center\" style=\"padding:20px 0;\">\n" +
-                "            <a href=\"{{LINK}}\" style=\"background-color:#5e60ce; color:#ffffff; text-decoration:none; padding:12px 24px; border-radius:6px; display:inline-block; font-weight:bold;\">\n" +
+                "            <a href=" + link + " style=\"background-color:#5e60ce; color:#ffffff; text-decoration:none; padding:12px 24px; border-radius:6px; display:inline-block; font-weight:bold;\">\n" +
                 "              Criar Nova Senha\n" +
                 "            </a>\n" +
                 "          </td>\n" +
@@ -63,8 +67,8 @@ public class MailService {
                 "    </td>\n" +
                 "  </tr>\n" +
                 "</table>";
+        emailProducer.enviarEmailParaFila(new EmailDTO(email, "Reset de senha", text));
 
-        sendEmail(email, "Reset de senha", text);
     }
 
     public void enviarEmailBoasVindas(String email, String nome) {
@@ -88,7 +92,7 @@ public class MailService {
                     + "Se tiver dúvidas, entre em contato com nossa equipe de suporte."
                     + "</td></tr></table></td></tr></table>";
 
-            sendEmail(email, "Bem-vindo à plataforma", conteudo);
+            emailProducer.enviarEmailParaFila(new EmailDTO(email, "Bem-vindo ao sistema!", conteudo));
         } catch (Exception e) {
             e.printStackTrace();
         }

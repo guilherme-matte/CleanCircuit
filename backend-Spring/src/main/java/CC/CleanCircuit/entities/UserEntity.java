@@ -3,7 +3,6 @@ package CC.CleanCircuit.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -32,9 +31,6 @@ public class UserEntity {
 
     private String urlProfileImage;
 
-    private String senhaTemporaria;
-
-    private boolean senhaTemporariaBoolean;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiration;
@@ -93,22 +89,6 @@ public class UserEntity {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public String getSenhaTemporaria() {
-        return senhaTemporaria;
-    }
-
-    public void setSenhaTemporaria(String senhaTemporaria) {
-        this.senhaTemporaria = senhaTemporaria;
-    }
-
-    public boolean isSenhaTemporariaBoolean() {
-        return senhaTemporariaBoolean;
-    }
-
-    public void setSenhaTemporariaBoolean(boolean senhaTemporariaBoolean) {
-        this.senhaTemporariaBoolean = senhaTemporariaBoolean;
     }
 
     public Date getDate() {

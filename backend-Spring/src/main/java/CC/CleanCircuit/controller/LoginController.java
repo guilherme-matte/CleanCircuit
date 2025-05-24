@@ -8,14 +8,11 @@ import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
 import CC.CleanCircuit.services.LoginService;
 import CC.CleanCircuit.services.SenhaService;
+import CC.CleanCircuit.services.SessionService;
 import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
@@ -31,6 +28,9 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private SessionService sessionService;
+
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDTO> verificarLogin(@RequestBody LoginDTO dto) {
@@ -39,28 +39,29 @@ public class LoginController {
         }
         UserEntity user = userRepository.findByEmail(dto.getEmail());
 
-        if (user.isSenhaTemporariaBoolean() && senhaServices.verificarSenha(dto.getPassword(), user.getSenhaTemporaria())) {
-            user.setSenhaTemporaria(null);
-            user.setSenhaTemporariaBoolean(false);
-            userRepository.save(user);
-            return response.resposta(null, "Login realizado com sucesso, crie uma nova senha.", 200);
-        }
 
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
-            if (user.isSenhaTemporariaBoolean()) {
-                user.setSenhaTemporaria(null);
-                user.setSenhaTemporariaBoolean(false);
-                userRepository.save(user);
+
+
+            if (sessionService.verificarUsuarioLogado(user.getEmail())) {
+                sessionService.salvarSessao(user.getEmail());
+                return response.resposta(null, "Login realizado com sucesso.", 200);
             }
-            return response.resposta(null, "Login realizado com sucesso", 200);
+            return response.resposta(null, "Usuário logado, contato um administrador.", 404);
+
 
         }
-        return response.resposta(null, "Usuario ou senha incorreto(s)", 404);
+        return response.resposta(null, "Usuário ou senha incorreto(s)", 404);
     }
 
     @PostMapping("/new-password")
     public ResponseEntity<ApiResponseDTO> novaSenha(@RequestBody NewPasswordDTO dto) {
         return loginService.criarNovaSenha(dto.getToken(), dto.getNewPassword());
+    }
+
+    @DeleteMapping("/shutdown-session/{email}")
+    public void shutdownSession(@PathVariable String email) {
+        sessionService.deletarSessao(email);
     }
 
     @PostMapping("/reset-password/{email}")

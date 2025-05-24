@@ -85,6 +85,7 @@ class AuthController extends Controller
     }
     public function logout()
     {
+        Http::delete(env('API_URL') . '/shutdown-session/' . urlencode(session('email')));
         session()->flush();
         return redirect('/login')->with('success', 'Log-out realizado com sucesso. Volte sempre!');
     }
