@@ -22,6 +22,8 @@
         class="bg-[#2e2e3e] p-8 rounded-xl w-full max-w-md flex flex-col gap-5">
         @if (session('error'))
             <label class="bg-red-400 text-center p-2 rounded">{{ session('error') }}</label>
+        @elseif (session('success'))
+            <label class="bg-green-400 text-center p-2 rounded">{{ session('success') }}</label>
         @endif
 
         <h1 class="text-2xl font-semibold text-center underline mb-4">Criar Nova Senha</h1>

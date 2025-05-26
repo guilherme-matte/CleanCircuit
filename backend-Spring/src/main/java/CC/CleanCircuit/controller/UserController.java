@@ -125,10 +125,16 @@ public class UserController {
         if (user == null) {
             return response.resposta(null, "Body vazio", 404);
         }
+
+        String msg = userService.verificarEmailCPF(user);
+        if (msg != null) {
+            return response.resposta(null, msg, 409);
+        }
+
         user.setSenha(senhaService.hashSenha(user.getSenha()));
         userRepository.save(user);
         mailService.enviarEmailBoasVindas(user.getEmail(), user.getNomeCompleto());
-        return response.resposta(user, "Cadastro realizado com sucesso", 200);
+        return response.resposta(user, "Cadastro realizado com sucesso!\n Faça login para acessar o sistema", 200);
 
     }
 

@@ -14,6 +14,30 @@ class PerfilController extends Controller
         }
         return view('perfil');
     }
+    public function showCriarPerfil()
+    {
+        return view('criar-perfil');
+    }
+    public function criarPerfil(Request $request)
+    {
+        $response = Http::post(env('API_URL') . '/user', [
+            'nomeCompleto' => $request->nomeCompleto,
+            'cpf' => $request->cpf,
+            'email' => $request->email,
+            'senha' => $request->password,
+            'date' => $request->dataNasc,
+            'telefone' => $request->telefone,
+        ]);
+        $data = $response->json();
+        if ($response->successful()) {
+
+            if ($data['status_code'] == 409) {
+                return redirect('/criar-perfil')->with('error', $data['status_msg']);
+            }
+            return redirect('/login')->with('success', $data['status_msg']);
+        }
+        return redirect('/criar-perfil')->with('error', $data['status_msg']);
+    }
     public function carregarPerfil()
     {
         $email = session('email');

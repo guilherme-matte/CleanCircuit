@@ -16,3 +16,5 @@ use App\Http\Controllers\PerfilController;
 Route::get('/perfil', [PerfilController::class, 'showPerfil']);
 Route::get('/perfil', [PerfilController::class, 'carregarPerfil']);
 Route::post('/perfil/save', [PerfilController::class, 'salvarPerfil']);
+Route::get('/criar-perfil', [PerfilController::class, 'showCriarPerfil']);
+Route::post('/criar-perfil',[PerfilController::class,'criarPerfil']);

@@ -34,6 +34,16 @@ public class UserService {
         }
     }
 
+    public String verificarEmailCPF(UserEntity user) {
+        UserEntity usuarioEncontradoEmail = userRepository.findByEmail(user.getEmail());
+        UserEntity usuarioEncontradoCPF = userRepository.findByCpf(user.getCpf());
+
+        if (usuarioEncontradoCPF != null || usuarioEncontradoEmail != null) {
+            return "Email ou CPF já cadastrados para outra conta";
+        }
+        return null;
+
+    }
 
     public void deletarImagemFunc(UserEntity user) {
         try {
