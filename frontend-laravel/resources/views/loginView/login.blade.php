@@ -27,7 +27,10 @@
                 <input type="password" id="password" name="password" placeholder="Senha" required>
             </div>
             <button type="submit">Login</button>
+            <div>
             <p><a href="/redefinir-senha">Esqueci minha senha</a></p>
+<p><a href="/criar-perfil">Criar conta</a></p>
+            </div>
         </form>
         <div class="divMensagem">
             @if (session('error'))
