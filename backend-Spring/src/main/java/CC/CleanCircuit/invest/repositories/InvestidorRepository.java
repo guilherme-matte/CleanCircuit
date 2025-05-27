@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface InvestidorRepository extends JpaRepository<InvestidorEntity, Long> {
 
-    Optional<InvestidorEntity> findByCpf(String cpf);
+Optional<InvestidorEntity> findByUser_Id(Long id);
 }

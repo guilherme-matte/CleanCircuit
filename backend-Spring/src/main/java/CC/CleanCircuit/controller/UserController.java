@@ -2,6 +2,8 @@ package CC.CleanCircuit.controller;
 
 import CC.CleanCircuit.dtos.UserDTO;
 import CC.CleanCircuit.entities.UserEntity;
+import CC.CleanCircuit.invest.entities.InvestidorEntity;
+import CC.CleanCircuit.invest.repositories.InvestidorRepository;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
@@ -30,6 +32,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SenhaService senhaService;
+    @Autowired
+    private InvestidorRepository investidorRepository;
     private final MailService mailService;
 
     public UserController(MailService mailService) {
@@ -129,6 +133,13 @@ public class UserController {
             return ApiResponse.resposta(null, msg, 409);
         }
 
+        InvestidorEntity investidor = new InvestidorEntity();
+
+        investidor.setCpf(user.getCpf());
+        investidor.setNomeCompleto(user.getNomeCompleto());
+
+        investidorRepository.save(investidor);
+        user.setInvestidor(investidor);
         user.setSenha(senhaService.hashSenha(user.getSenha()));
         userRepository.save(user);
         mailService.enviarEmailBoasVindas(user.getEmail(), user.getNomeCompleto());
