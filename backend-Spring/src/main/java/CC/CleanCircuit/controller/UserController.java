@@ -25,8 +25,6 @@ import java.nio.file.StandardCopyOption;
 @Controller
 public class UserController {
     @Autowired
-    private ApiResponse response;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
@@ -44,11 +42,11 @@ public class UserController {
         UserEntity user = userRepository.findByEmail(email);
 
         if (user == null) {
-            return response.resposta(null, "Usuário não encontrado", 404);
+            return ApiResponse.resposta(null, "Usuário não encontrado", 404);
         }
 
         if (file == null || file.isEmpty()) {
-            return response.resposta(null, "Arquivo não enviado", 400);
+            return ApiResponse.resposta(null, "Arquivo não enviado", 400);
         }
 
         try {
@@ -70,9 +68,9 @@ public class UserController {
             user.setUrlProfileImage("uploads/" + filename);
 
             userRepository.save(user);
-            return response.resposta(user, "Imagem alterada com sucesso", 200);
+            return ApiResponse.resposta(user, "Imagem alterada com sucesso", 200);
         } catch (IOException e) {
-            return response.resposta(null, "Erro ao salvar imagem: " + e.getMessage(), 500);
+            return ApiResponse.resposta(null, "Erro ao salvar imagem: " + e.getMessage(), 500);
         }
     }
 
@@ -81,21 +79,21 @@ public class UserController {
     public ResponseEntity<ApiResponseDTO> deletarImagem(@PathVariable String email) {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            return response.resposta(null, "Usuario não encontrado", 404);
+            return ApiResponse.resposta(null, "Usuario não encontrado", 404);
         }
         userService.deletarImagemFunc(user);
-        return response.resposta(user, "Imagem deletada com sucesso", 200);
+        return ApiResponse.resposta(user, "Imagem deletada com sucesso", 200);
     }
 
     @GetMapping("/user/{email}")
     public ResponseEntity<ApiResponseDTO> retornarUsuario(@PathVariable String email) {
         UserDTO userDTO = new UserDTO();
         if (email.isEmpty()) {
-            return response.resposta(null, "Email vazio", 404);
+            return ApiResponse.resposta(null, "Email vazio", 404);
         }
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            return response.resposta(null, "Usuário não encontrado", 404);
+            return ApiResponse.resposta(null, "Usuário não encontrado", 404);
         }
         userDTO.setUserEntity(user);
         if (user.getUrlProfileImage() != null) {
@@ -104,7 +102,7 @@ public class UserController {
         }
 
 
-        return response.resposta(userDTO, "Usuário encontrado com sucesso", 200);
+        return ApiResponse.resposta(userDTO, "Usuário encontrado com sucesso", 200);
     }
 
     @PutMapping("/user/{email}")
@@ -116,25 +114,25 @@ public class UserController {
         userAtual.setEmail(user.getEmail());
 
         userRepository.save(userAtual);
-        return response.resposta(userAtual, "Usuário alterado com sucesso", 200);
+        return ApiResponse.resposta(userAtual, "Usuário alterado com sucesso", 200);
     }
 
 
     @PostMapping("/user")
     public ResponseEntity<ApiResponseDTO> criarUsuario(@RequestBody UserEntity user) {
         if (user == null) {
-            return response.resposta(null, "Body vazio", 404);
+            return ApiResponse.resposta(null, "Body vazio", 404);
         }
 
         String msg = userService.verificarEmailCPF(user);
         if (msg != null) {
-            return response.resposta(null, msg, 409);
+            return ApiResponse.resposta(null, msg, 409);
         }
 
         user.setSenha(senhaService.hashSenha(user.getSenha()));
         userRepository.save(user);
         mailService.enviarEmailBoasVindas(user.getEmail(), user.getNomeCompleto());
-        return response.resposta(user, "Cadastro realizado com sucesso!\n Faça login para acessar o sistema", 200);
+        return ApiResponse.resposta(user, "Cadastro realizado com sucesso!\n Faça login para acessar o sistema", 200);
 
     }
 

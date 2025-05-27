@@ -1,4 +1,9 @@
 package CC.CleanCircuit.invest.entities;
 
-public class StockEntity {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_stock")
+public class StockEntity extends BaseInvestEntity {
 }

@@ -17,23 +17,23 @@ public class InvestidorEntity {
     private String cpf;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AcaoEntity> acao;
+    private List<AcaoEntity> acaos;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FiiEntity> fii;
+    private List<FiiEntity> fiis;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EtfEntity> etf;
+    private List<EtfEntity> etfs;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CriptoEntity> cripto;
+    private List<CriptoEntity> criptos;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReitsEntity> reits;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StockEntity> stock;
+    private List<StockEntity> stocks;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RendaFixaEntity> rendaFixa;
+    private List<RendaFixaEntity> rendasFixas;
 }

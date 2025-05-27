@@ -15,8 +15,7 @@ import java.util.UUID;
 public class LoginService {
     @Autowired
     private SenhaService senhaService;
-    @Autowired
-    private ApiResponse response;
+    
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -31,13 +30,13 @@ public class LoginService {
     public ResponseEntity<ApiResponseDTO> criarNovaSenha(String token, String novaSenha) {
         UserEntity user = userRepository.findByResetToken(token);
         if (user == null || user.getResetTokenExpiration().isBefore(LocalDateTime.now())) {
-            return response.resposta(null, "Token inválido ou expirado", 404);
+            return ApiResponse.resposta(null, "Token inválido ou expirado", 404);
         }
         user.setSenha(senhaService.hashSenha(novaSenha));
         user.setResetTokenExpiration(null);
         user.setResetToken(null);
         userRepository.save(user);
-        return response.resposta(user, "Senha alterada com sucesso! Faça login novamente.", 200);
+        return ApiResponse.resposta(user, "Senha alterada com sucesso! Faça login novamente.", 200);
     }
 
     public void gerarTokenResetSenha(UserEntity user) {

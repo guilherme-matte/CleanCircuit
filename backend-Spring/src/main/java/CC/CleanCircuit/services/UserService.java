@@ -20,8 +20,6 @@ public class UserService {
     private SenhaService senhaService;
     @Autowired
     private MailService mailService;
-    @Autowired
-    private ApiResponse response;
 
 
     public boolean verificarEmail(String email) {
@@ -58,7 +56,7 @@ public class UserService {
     public ResponseEntity<ApiResponseDTO> deletarUser(String email) {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            return response.resposta(null, "Usuário não encontrado", 404);
+            return ApiResponse.resposta(null, "Usuário não encontrado", 404);
         }
 
         try {
@@ -66,9 +64,9 @@ public class UserService {
             if (user.getUrlProfileImage() != null) {
                 Files.deleteIfExists(Path.of(user.getUrlProfileImage()));
             }
-            return response.resposta(null, "Usuário deletado com sucesso, saindo do sistema.", 200);
+            return ApiResponse.resposta(null, "Usuário deletado com sucesso, saindo do sistema.", 200);
         } catch (IOException e) {
-            return response.resposta(null, "Erro ao deletar usuário. " + e.getMessage(), 500);
+            return ApiResponse.resposta(null, "Erro ao deletar usuário. " + e.getMessage(), 500);
         }
     }
 }

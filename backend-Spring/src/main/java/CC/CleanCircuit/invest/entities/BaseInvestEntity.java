@@ -3,16 +3,22 @@ package CC.CleanCircuit.invest.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "tb_cripto")
-public class CriptoEntity {
+@MappedSuperclass
+public class BaseInvestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
+
 
     private String sigla;
-    private double quantidade;
-    private double total;
+
+    private String nome;
+
+    private int cotas;
+
+    private double valorTotal;
+
+    private double dividendos;
 
     @ManyToOne
     @JoinColumn(name = "investidor_id", referencedColumnName = "id")
@@ -20,11 +26,11 @@ public class CriptoEntity {
     private InvestidorEntity investidor;
 
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getSigla() {
@@ -35,20 +41,36 @@ public class CriptoEntity {
         this.sigla = sigla;
     }
 
-    public double getQuantidade() {
-        return quantidade;
+    public String getNome() {
+        return nome;
     }
 
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public double getTotal() {
-        return total;
+    public int getCotas() {
+        return cotas;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setCotas(int cotas) {
+        this.cotas = cotas;
+    }
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public double getDividendos() {
+        return dividendos;
+    }
+
+    public void setDividendos(double dividendos) {
+        this.dividendos = dividendos;
     }
 
     public InvestidorEntity getInvestidor() {

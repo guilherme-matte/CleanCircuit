@@ -1,4 +1,9 @@
 package CC.CleanCircuit.invest.entities;
 
-public class EtfEntity {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_etf")
+public class EtfEntity extends BaseInvestEntity {
 }
