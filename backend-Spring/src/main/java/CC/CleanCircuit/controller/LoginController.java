@@ -41,7 +41,7 @@ public class LoginController {
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
 
 
-            return ApiResponse.resposta(null, "Login realizado com sucesso.", 200);
+            return ApiResponse.resposta(user, "Login realizado com sucesso.", 200);
 
 
         }

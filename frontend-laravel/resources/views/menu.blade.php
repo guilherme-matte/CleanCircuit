@@ -22,7 +22,8 @@
     </div>
     <div class="conteudo flex-1 bg-[#5a4d7a] p-10 flex justify-center items-center">
         <div class="formContainer bg-[#2e2e3e] p-8 rounded-xl w-full max-w-md flex flex-col gap-5">
-        teste
+
+{{session('id')}}
         </div>
     </div>
 </body>
