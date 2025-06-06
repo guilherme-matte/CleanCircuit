@@ -11,6 +11,8 @@ class CarteiraController extends Controller
         return view('carteira');
     }
     public function resumoCarteira() {
-        //
+        
+
+        
     }
 }
