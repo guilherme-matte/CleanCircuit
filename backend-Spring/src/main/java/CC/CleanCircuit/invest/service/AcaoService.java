@@ -14,36 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AcaoService {
-    @Autowired
-    private AcaoRepository repository;
-    @Autowired
-    private InvestidorRepository investidorRepository;
+public class AcaoService extends BaseInvestService {
 
-    public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(String sigla, Long id) {
-        Optional<AcaoEntity> acao = repository.findBySiglaAndInvestidor_Id(sigla, id);
-        return acao.map(acaoEntity -> ApiResponse.resposta(acaoEntity, "Ação encontrada com sucesso", 200))
-                .orElseGet(() -> ApiResponse.resposta(null, "Ação não encontrada", 404));
-    }
 
-    public ResponseEntity<ApiResponseDTO> cadastrarAcao(AcaoEntity acao, Long id) {
-        Optional<InvestidorEntity> investidor = investidorRepository.findByUser_Id(id);
-
-        if (investidor.isEmpty()) {
-            return ApiResponse.resposta(null, "Investidor não encontrado", 404);
-        }
-        acao.setInvestidor(investidor.get());
-        repository.save(acao);
-        return ApiResponse.resposta(acao, "Salvo com sucesso", 200);
-    }
-
-    public ResponseEntity<ApiResponseDTO> retornarAcaoCarteira(Long id) {
-        Optional<InvestidorEntity> investidor = investidorRepository.findByUser_Id(id);
-        if (investidor.isPresent()) {
-            List<AcaoEntity> acoes = investidor.get().getAcoes();
-            return ApiResponse.resposta(acoes, "Lista com ações retornada com sucesso!", 200);
-        }
-        return ApiResponse.resposta(null, "Investidor não encontrado ou inválido", 404);
-    }
-    
 }
