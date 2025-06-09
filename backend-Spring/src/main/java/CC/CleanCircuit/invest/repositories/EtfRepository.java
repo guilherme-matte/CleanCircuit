@@ -1,4 +1,7 @@
 package CC.CleanCircuit.invest.repositories;
 
-public interface EtfRepository {
+import CC.CleanCircuit.invest.entities.EtfEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EtfRepository extends JpaRepository<EtfEntity,Long> {
 }

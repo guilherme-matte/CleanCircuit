@@ -1,4 +1,7 @@
 package CC.CleanCircuit.invest.repositories;
 
-public interface FiiRepository {
+import CC.CleanCircuit.invest.entities.FiiEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FiiRepository extends JpaRepository<FiiEntity, Long> {
 }

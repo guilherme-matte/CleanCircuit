@@ -1,4 +1,7 @@
 package CC.CleanCircuit.invest.repositories;
 
-public interface ReitsRepository {
+import CC.CleanCircuit.invest.entities.ReitsEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReitsRepository extends JpaRepository<ReitsEntity, Long> {
 }
