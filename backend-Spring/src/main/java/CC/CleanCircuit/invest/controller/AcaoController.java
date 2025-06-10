@@ -18,18 +18,7 @@ public class AcaoController {
         this.acaoService = acaoService;
     }
 
-    @GetMapping("/acao/{id}/{sigla}")
-    public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(@PathVariable String sigla, @PathVariable Long id) {
-        return acaoService.retornarAcaoUnica(sigla, id);
-    }
 
-    @PostMapping("/acao/{id}")
-    public ResponseEntity<ApiResponseDTO> cadastrarAcao(@RequestBody AcaoEntity acao, @PathVariable Long id) {
-        return acaoService.cadastrarAcao(acao, id);
-    }
 
-    @GetMapping("/acao/{id}")
-    public ResponseEntity<ApiResponseDTO> retornarAcoes(@PathVariable Long id) {
-        return acaoService.retornarAcaoCarteira(id);
-    }
+
 }
