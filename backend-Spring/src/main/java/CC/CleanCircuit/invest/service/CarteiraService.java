@@ -29,7 +29,8 @@ public class CarteiraService {
         carteira.put("ETFs", investidor.get().getEtfs());
         carteira.put("Criptomoedas", investidor.get().getCriptos());
         carteira.put("Reits", investidor.get().getReits());
-        return null;
+        carteira.put("Ações Estrangeiras", investidor.get().getStocks());
+        return ApiResponse.resposta(carteira, "Carteira carregada com sucesso", 200);
     }
 
 }
