@@ -2,6 +2,7 @@ package CC.CleanCircuit.invest.controller;
 
 import CC.CleanCircuit.invest.entities.AcaoEntity;
 import CC.CleanCircuit.invest.service.AcaoService;
+import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,13 @@ public class AcaoController {
     }
 
 
+    @GetMapping("/acao/{id}/{sigla}}")
+    public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(@PathVariable Long id, @PathVariable String sigla) {
+        return acaoService.retornarAcaoUnica(sigla, id);
+    }
 
-
+    @GetMapping("/acao/{id}")
+    public ResponseEntity<ApiResponseDTO> retornarAcoes(@PathVariable Long id) {
+        return acaoService.retornarAcoes(id);
+    }
 }

@@ -22,13 +22,44 @@ public class AcaoService {
     @Autowired
     private InvestidorService investidorService;
 
+    public ResponseEntity<ApiResponseDTO> retornarAcoes(Long idInvestidor) {
+        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
+
+        if (investidor.isEmpty()) {
+            return ApiResponse.resposta(null, "Investidor não encontrado", 404);
+        }
+        return ApiResponse.resposta(investidor.get().getAcoes(), "Ações retornadas com sucesso", 200);
+    }
+
     public ResponseEntity<ApiResponseDTO> cadastrarAcao(AcaoEntity acao, Long idInvestidor) {
+
         if (!investidorService.verificarInvestidor(idInvestidor)) {
             return ApiResponse.resposta(null, "Investidor não encontrado", 404);
         }
-        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor)
+
+        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
+
         acao.setInvestidor(investidor.get());
 
-        return ApiResponse.resposta(acao,"Acao cadastradaa",200);
+        acaoRepository.save(acao);
+
+        return ApiResponse.resposta(acao, "Acao cadastradaa", 200);
     }
+
+    public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(String sigla, Long idInvestidor) {
+
+        if (!investidorService.verificarInvestidor(idInvestidor)) {
+            return ApiResponse.resposta(null, "investidor não encontrado", 404);
+        }
+
+        Optional<AcaoEntity> acao = acaoRepository.findBySigla(sigla);
+
+        if (acao.isEmpty()) {
+            return ApiResponse.resposta(null, "Ação não encontrado", 404);
+        }
+
+        return ApiResponse.resposta(acao, "Ação encontrada com sucesso", 200);
+
+    }
+
 }
