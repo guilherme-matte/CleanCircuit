@@ -17,4 +17,5 @@ public class CarteiraController {
     public ResponseEntity<ApiResponseDTO> retornarCarteira(@PathVariable Long id) {
         return service.retornarCarteira(id);
     }
+
 }

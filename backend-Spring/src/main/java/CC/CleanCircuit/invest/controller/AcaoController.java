@@ -20,7 +20,7 @@ public class AcaoController {
     }
 
 
-    @GetMapping("/acao/{id}/{sigla}}")
+    @GetMapping("/acao/{id}/{siglavsc}")
     public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(@PathVariable Long id, @PathVariable String sigla) {
         return acaoService.retornarAcaoUnica(sigla, id);
     }
