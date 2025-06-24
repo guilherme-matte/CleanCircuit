@@ -33,11 +33,11 @@ public class AcaoService {
 
     public ResponseEntity<ApiResponseDTO> cadastrarAcao(AcaoEntity acao, Long idInvestidor) {
 
-        if (!investidorService.verificarInvestidor(idInvestidor)) {
+        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
+
+        if (investidor.isEmpty()) {
             return ApiResponse.resposta(null, "Investidor não encontrado", 404);
         }
-
-        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
 
         acao.setInvestidor(investidor.get());
 

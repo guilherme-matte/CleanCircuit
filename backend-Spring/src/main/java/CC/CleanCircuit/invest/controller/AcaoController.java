@@ -20,7 +20,7 @@ public class AcaoController {
     }
 
 
-    @GetMapping("/acao/{id}/{siglavsc}")
+    @GetMapping("/acao/{id}/{sigla}")
     public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(@PathVariable Long id, @PathVariable String sigla) {
         return acaoService.retornarAcaoUnica(sigla, id);
     }
@@ -30,5 +30,9 @@ public class AcaoController {
         return acaoService.retornarAcoes(id);
     }
 
+    @PostMapping("/acao/{id}")
+    public ResponseEntity<ApiResponseDTO> cadAcao(@RequestBody AcaoEntity acao, @PathVariable Long id) {
+        return acaoService.cadastrarAcao(acao, id);
+    }
 
 }
