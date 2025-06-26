@@ -33,9 +33,9 @@ public class UserEntity {
 
     private String urlProfileImage;
 
-    @OneToOne
-    @JoinColumn(name = "investidor_id", referencedColumnName = "id", unique = true)
-    private InvestidorEntity investidor;
+    //@OneToOne
+    //@JoinColumn(name = "investidor_id", referencedColumnName = "id", unique = true)
+    //private InvestidorEntity investidor;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiration;
@@ -56,13 +56,7 @@ public class UserEntity {
         this.resetTokenExpiration = resetTokenExpiration;
     }
 
-    public InvestidorEntity getInvestidor() {
-        return investidor;
-    }
 
-    public void setInvestidor(InvestidorEntity investidor) {
-        this.investidor = investidor;
-    }
 
     public Long getId() {
         return id;

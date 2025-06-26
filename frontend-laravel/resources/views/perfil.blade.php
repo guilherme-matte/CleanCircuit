@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/imask"></script>
 
-    <link rel="stylesheet" href="style.css"> <!-- se quiser separar depois -->
+    <link rel="stylesheet" href="style.css">
     <style>
         input:-webkit-autofill {
             background-color: #2e2e3e !important;

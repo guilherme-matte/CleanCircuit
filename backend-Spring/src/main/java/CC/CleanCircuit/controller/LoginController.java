@@ -37,6 +37,9 @@ public class LoginController {
         }
         UserEntity user = userRepository.findByEmail(dto.getEmail());
 
+        if (user==null){
+            return ApiResponse.resposta(null,"Usuário ou senha incorreto(s)",404);
+        }
 
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
 

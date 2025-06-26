@@ -18,9 +18,6 @@ public class InvestidorEntity {
     @Column(unique = true, nullable = false)
     private String cpf;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "investidor")
-    private UserEntity user;
 
     @OneToMany(mappedBy = "investidor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AcaoEntity> acoes;
@@ -44,13 +41,7 @@ public class InvestidorEntity {
     private List<RendaFixaEntity> rendasFixas;
 
 
-    public UserEntity getUser() {
-        return user;
-    }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 
     public Long getId() {
         return id;

@@ -58,7 +58,8 @@ class AuthController extends Controller
             session([
                 'email' => $request->email,
                 'logado' => true,
-                'id'=> $data['status_res']['id']
+                'id' => $data['status_res']['id'],
+                'cpf' => $data['status_res']['cpf']
             ]);
             if ($data['status_msg'] == "Login realizado com sucesso, crie uma nova senha.") {
                 return redirect('/criar-nova-senha')->with('success', $data['status_msg']);

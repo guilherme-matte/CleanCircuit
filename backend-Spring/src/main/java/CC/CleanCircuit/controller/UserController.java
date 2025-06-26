@@ -139,7 +139,6 @@ public class UserController {
         investidor.setNomeCompleto(user.getNomeCompleto());
 
         investidorRepository.save(investidor);
-        user.setInvestidor(investidor);
         user.setSenha(senhaService.hashSenha(user.getSenha()));
         userRepository.save(user);
         mailService.enviarEmailBoasVindas(user.getEmail(), user.getNomeCompleto());

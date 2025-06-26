@@ -22,28 +22,28 @@ public class AcaoService {
     @Autowired
     private InvestidorService investidorService;
 
-    public ResponseEntity<ApiResponseDTO> retornarAcoes(Long idInvestidor) {
-        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
+    public ResponseEntity<ApiResponseDTO> retornarAcoes(String cpf) {
+        InvestidorEntity investidor = investidorRepository.findByCpf(cpf);
 
-        if (investidor.isEmpty()) {
+        if (investidor ==null) {
             return ApiResponse.resposta(null, "Investidor não encontrado", 404);
         }
-        return ApiResponse.resposta(investidor.get().getAcoes(), "Ações retornadas com sucesso", 200);
+        return ApiResponse.resposta(investidor.getAcoes(), "Ações retornadas com sucesso", 200);
     }
 
-    public ResponseEntity<ApiResponseDTO> cadastrarAcao(AcaoEntity acao, Long idInvestidor) {
+    public ResponseEntity<ApiResponseDTO> cadastrarAcao(AcaoEntity acao, String cpf) {
 
-        Optional<InvestidorEntity> investidor = investidorRepository.findById(idInvestidor);
+        InvestidorEntity investidor = investidorRepository.findByCpf(cpf);
 
-        if (investidor.isEmpty()) {
+        if (investidor==null) {
             return ApiResponse.resposta(null, "Investidor não encontrado", 404);
         }
 
-        acao.setInvestidor(investidor.get());
+        acao.setInvestidor(investidor);
 
         acaoRepository.save(acao);
 
-        return ApiResponse.resposta(acao, "Acao cadastradaa", 200);
+        return ApiResponse.resposta(acao, "Acao cadastrada", 200);
     }
 
     public ResponseEntity<ApiResponseDTO> retornarAcaoUnica(String sigla, Long idInvestidor) {

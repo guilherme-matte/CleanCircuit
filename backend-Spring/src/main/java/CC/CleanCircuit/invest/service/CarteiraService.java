@@ -17,19 +17,20 @@ public class CarteiraService {
     private InvestidorRepository investidorRepository;
 
 
-    public ResponseEntity<ApiResponseDTO> retornarCarteira(Long id) {
-        Optional<InvestidorEntity> investidor = investidorRepository.findById(id);
+    public ResponseEntity<ApiResponseDTO> retornarCarteira(String cpf) {
+       InvestidorEntity investidor = investidorRepository.findByCpf(cpf);
 
-        if (investidor.isEmpty()) {
+        if (investidor==null) {
             return ApiResponse.resposta(null, "usuário não encontrado", 404);
         }
         LinkedHashMap<String, Object> carteira = new LinkedHashMap<>();
-        carteira.put("Ações", investidor.get().getAcoes());
-        carteira.put("Fundos Imobiliários", investidor.get().getFiis());
-        carteira.put("ETFs", investidor.get().getEtfs());
-        carteira.put("Criptomoedas", investidor.get().getCriptos());
-        carteira.put("Reits", investidor.get().getReits());
-        carteira.put("Ações Estrangeiras", investidor.get().getStocks());
+        carteira.put("Ações", investidor.getAcoes());
+        carteira.put("Fundos Imobiliários", investidor.getFiis());
+        carteira.put("ETFs", investidor.getEtfs());
+        carteira.put("Criptomoedas", investidor.getCriptos());
+        carteira.put("Reits", investidor.getReits());
+        carteira.put("Ações Estrangeiras", investidor.getStocks());
+        System.out.println("teste");
         return ApiResponse.resposta(carteira, "Carteira carregada com sucesso", 200);
     }
 

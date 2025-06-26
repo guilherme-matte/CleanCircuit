@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Criar Conta</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/imask"></script>
+
     <style>
         input:-webkit-autofill {
             background-color: #2e2e3e !important;
@@ -38,7 +40,7 @@
 
             <div class="flex flex-col">
                 <label for="email" class="mb-1 text-gray-300">E-mail</label>
-                <input type="email" name="email" id="email" required
+                <input type="email" name="email" id="email" required plac
                     class="bg-transparent border-b border-gray-300 h-11 text-[#f8f8f2] text-base placeholder-gray-400 outline-none" />
             </div>
 
@@ -77,6 +79,7 @@
                 class="h-11 bg-[#5e60ce] text-white rounded-md cursor-pointer text-base transition-colors duration-300 hover:bg-[#4b4caa] border-none">
                 Criar Conta
             </button>
+            <a href="{{ url()->previous() }}">Voltar</a>
         </form>
     </div>
 
@@ -94,6 +97,18 @@
             erro.classList.add("hidden");
             return true;
         }
+
+        function formatInput(campo, mask) {
+
+            return IMask(campo, {
+                mask: mask
+            });
+        }
+
+        var telefoneInput = document.getElementById('telefone');
+        var cpfInput = document.getElementById('cpf');
+        formatInput(telefoneInput, "(00) 0 0000-0000");
+        formatInput(cpfInput, "000.000.000-00");
     </script>
 
 </body>

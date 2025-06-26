@@ -13,9 +13,9 @@ public class CarteiraController {
     @Autowired
     private CarteiraService service;
 
-    @GetMapping("/carteira/{id}")
-    public ResponseEntity<ApiResponseDTO> retornarCarteira(@PathVariable Long id) {
-        return service.retornarCarteira(id);
+    @GetMapping("/carteira/{cpf}")
+    public ResponseEntity<ApiResponseDTO> retornarCarteira(@PathVariable String cpf) {
+        return service.retornarCarteira(cpf);
     }
 
 }
