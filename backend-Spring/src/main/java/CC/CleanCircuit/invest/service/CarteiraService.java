@@ -67,22 +67,19 @@ public class CarteiraService {
         // repete para os demais tipos...
 
         double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorMercado).sum();
+                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
         totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorMercado).sum();
+                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
         // repete para os demais tipos...
 
-        carteira.put("Valor Aplicado", 1);
-        carteira.put("Valor Atual", 2);
-        double variacao = 0;
-        if (totalAplicado != 0 && totalAtual != 0) {
-            carteira.put("Variacao", variacao);
-        } else {
-            variacao = (totalAtual - totalAplicado) / totalAplicado * 100;
-            carteira.put("Variacao", variacao);
-        }
+        carteira.put("Valor Aplicado", totalAplicado);
+        carteira.put("Valor Atual", totalAtual);
+        double variacao = ((totalAtual - totalAplicado) / totalAplicado) * 100;
+
+        carteira.put("Variacao", variacao);
+
         return ApiResponse.resposta(carteira, "Carteira carregada com sucesso", 200);
     }
 
@@ -93,15 +90,15 @@ public class CarteiraService {
             double precoAtual = brapi.map(BrapiDTO::getPrecoAtual).orElse(0.0);
 
             double valorAplicado = ativo.getValorTotal();
-            double valorMercado = precoAtual * ativo.getCotas();
-            double lucro = valorMercado - valorAplicado;
+            double lucro = (precoAtual * ativo.getCotas()) - valorAplicado;
 
             ResumoAtivoDTO dto = new ResumoAtivoDTO();
             dto.setSigla(ativo.getSigla());
             dto.setNome(ativo.getNome());
             dto.setCotas(ativo.getCotas());
             dto.setValorAplicado(valorAplicado);
-            dto.setValorMercado(valorMercado);
+            dto.setValorAtual(precoAtual);
+            dto.setValorAtualTotal(precoAtual * dto.getCotas());
             dto.setDividendos(ativo.getDividendos());
             dto.setLucroPrejuizo(lucro);
 

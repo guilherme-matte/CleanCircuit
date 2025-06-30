@@ -4,10 +4,19 @@ public class ResumoAtivoDTO {
     private String sigla;
     private String nome;
     private double valorAplicado;      // cotas * valorTotal
-    private double valorMercado;       // cotas * precoAtual da API
+    private double valorAtual;       // pega o valor atual do ativo
+    private double valorAtualTotal;
     private double dividendos;
     private double lucroPrejuizo;
     private int cotas;
+
+    public double getValorAtualTotal() {
+        return valorAtualTotal;
+    }
+
+    public void setValorAtualTotal(double valorAtualTotal) {
+        this.valorAtualTotal = valorAtualTotal;
+    }
 
     public int getCotas() {
         return cotas;
@@ -41,12 +50,12 @@ public class ResumoAtivoDTO {
         this.valorAplicado = valorAplicado;
     }
 
-    public double getValorMercado() {
-        return valorMercado;
+    public double getValorAtual() {
+        return valorAtual;
     }
 
-    public void setValorMercado(double valorMercado) {
-        this.valorMercado = valorMercado;
+    public void setValorAtual(double valorAtual) {
+        this.valorAtual = valorAtual;
     }
 
     public double getDividendos() {

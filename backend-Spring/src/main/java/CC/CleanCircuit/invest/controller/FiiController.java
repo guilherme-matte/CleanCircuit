@@ -1,6 +1,6 @@
 package CC.CleanCircuit.invest.controller;
 
-import CC.CleanCircuit.invest.entities.FiiEntity;
+import CC.CleanCircuit.invest.dtos.AtivoDTO;
 import CC.CleanCircuit.invest.service.FiiService;
 import CC.CleanCircuit.response.ApiResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ public class FiiController {
 
 
     @PostMapping("/fii/{cpf}")
-    public ResponseEntity<ApiResponseDTO> cadFii(@RequestBody FiiEntity fii, @PathVariable String cpf) {
-        return service.cadFii(fii, cpf);
+    public ResponseEntity<ApiResponseDTO> cadFii(@RequestBody AtivoDTO dto, @PathVariable String cpf) {
+        return service.transacaoFii(dto, cpf);
     }
 
     @GetMapping("/fii/{cpf}")
