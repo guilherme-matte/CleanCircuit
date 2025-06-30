@@ -41,7 +41,6 @@
             <a href="/logout" class="hover:text-[#5e60ce]">Sair</a>
         </nav>
     </aside>
-
     <!-- Conteúdo -->
     <main class="flex-1 p-8 bg-[#1e1e2e]">
         <h1 class="text-3xl font-bold mb-6">Visão Geral da Carteira</h1>
@@ -49,19 +48,22 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md">
                 <h3 class="text-lg mb-2">Valor Total</h3>
-                <p class="text-2xl font-bold">R$ 120.000,00</p>
+                <p class="text-2xl font-bold">{{ $resumo['Valor Atual'] }}</p>
             </div>
             <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md">
-                <h3 class="text-lg mb-2">Rentabilidade</h3>
-                <p class="text-2xl font-bold text-green-400">+12,4%</p>
+                <h3 class="text-lg mb-2">Variação</h3>
+                <p class="text-2xl font-bold text-green-400">0</p>
             </div>
             <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md">
                 <h3 class="text-lg mb-2">Dividendos (12m)</h3>
-                <p class="text-2xl font-bold">R$ 4.300,00</p>
+                <p class="text-2xl font-bold">0</p>
+            </div>
+            <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md">
+                <h3 class="text-lg mb-2">Valor Aplicado</h3>
+                <p class="text-2xl font-bold">R$ {{ number_format($resumo['Valor Aplicado'], 2, ',', '.') }}</p>
             </div>
         </div>
 
-        <!-- Ativos agrupados por tipo -->
         <!-- Ativos agrupados por tipo -->
         <div class="space-y-10">
             @foreach ($resumo as $tipo => $ativos)
@@ -76,23 +78,46 @@
                                         <th class="p-2">Sigla</th>
                                         <th class="p-2">Nome</th>
                                         <th class="p-2">Cotas</th>
-                                        <th class="p-2">Valor Total</th>
+                                        <th class="p-2">Preço Médio</th>
+                                        <th class="p-2">Valor Aplicado</th>
+                                        <th class="p-2">Valor de Mercado</th>
+                                        <th class="p-2">Lucro / Prejuízo</th>
+                                        <th class="p-2">Variação</th>
                                         <th class="p-2">Dividendos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($ativos as $ativo)
+                                        @php
+                                            $valorAplicado = $ativo['valorAplicado'];
+                                            $valorMercado = $ativo['valorMercado'];
+                                            $cotas = max($ativo['cotas'], 1); // evita divisão por zero
+                                            $precoMedio = $valorAplicado / $cotas;
+                                            $lucro = $ativo['lucroPrejuizo'];
+                                            $variacao =
+                                                $valorAplicado > 0
+                                                    ? (($valorMercado - $valorAplicado) / $valorAplicado) * 100
+                                                    : 0;
+                                        @endphp
                                         <tr class="border-b border-[#444]">
                                             <td class="p-2">{{ strtoupper($ativo['sigla']) }}</td>
                                             <td class="p-2">{{ $ativo['nome'] }}</td>
                                             <td class="p-2">{{ $ativo['cotas'] }}</td>
-                                            <td class="p-2">R$ {{ number_format($ativo['valorTotal'], 2, ',', '.') }}
+                                            <td class="p-2">R$ {{ number_format($precoMedio, 2, ',', '.') }}</td>
+                                            <td class="p-2">R$ {{ number_format($valorAplicado, 2, ',', '.') }}</td>
+                                            <td class="p-2">R$ {{ number_format($valorMercado, 2, ',', '.') }}</td>
+                                            <td class="p-2">R$ {{ number_format($lucro, 2, ',', '.') }}</td>
+                                            <td class="p-2">
+                                                <span class="{{ $variacao >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                                                    {{ number_format($variacao, 2, ',', '.') }}%
+                                                </span>
                                             </td>
-                                            <td class="p-2">R$ {{ number_format($ativo['dividendos'], 2, ',', '.') }}
-                                            </td>
+                                            <td class="p-2">R$
+                                                {{ number_format($ativo['dividendos'], 2, ',', '.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
+
                             </table>
                         </div>
                     </section>
