@@ -44,7 +44,7 @@
     </aside>
     <!-- Conteúdo -->
     <main class="flex-1 p-8 bg-[#1e1e2e]">
-        <h1 class="text-3xl font-bold mb-6">Visão Geral da Carteira</h1>
+        <h1 class="text-3xl font-bold mb-6">Resumo da Carteira</h1>
         <!-- Cards com indicadores -->
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -55,7 +55,7 @@
             <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md">
                 <h3 class="text-lg mb-2">Variação</h3>
                 <p title="Valor real: R$ {{ number_format($resumo['Valor Atual'] - $resumo['Valor Aplicado'], 2, ',', '.') }}"
-                    class="text-2xl font-bold text-green-400">
+                    class="text-2xl font-bold {{ $resumo['Variacao'] >= 0 ? 'text-green-400' : 'text-red-400' }}">
                     {{ number_format($resumo['Variacao'], 2, ',', '.') . '%' }}
                 </p>
             </div>
