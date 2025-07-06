@@ -27,7 +27,7 @@ public class EtfService {
         if (investidor == null) {
             return ApiResponse.resposta(null, "Usuário não encontrado", 404);
         }
-        EtfEntity etf = etfRepository.findBySiglaAndInvestidor_Cpf(dto.getSigla(), cpf);
+        EtfEntity etf = etfRepository.findBySiglaAndInvestidor_Cpf(dto.getSigla().toUpperCase(), cpf);
         if (etf == null) {
             etf = new EtfEntity();
             etf.setInvestidor(investidor);
@@ -43,7 +43,7 @@ public class EtfService {
             etf.setCotas(etf.getCotas() + dto.getCotas());
             etf.setValorTotal(etf.getValorTotal() + (dto.getCotas() * dto.getValorCota()));
         } else {
-            if (etf.getCotas() < etf.getCotas()) {
+            if (etf.getCotas() < dto.getCotas()) {
                 return ApiResponse.resposta(null, "Erro: Não é possível vender mais cotas do que possuí", 409);
 
             }

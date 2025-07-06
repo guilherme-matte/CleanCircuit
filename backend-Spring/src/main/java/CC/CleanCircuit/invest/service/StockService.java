@@ -18,6 +18,6 @@ public class StockService {
             return ApiResponse.resposta(null, "Quantidade de cotas menor ou iguais a zero!", 409);
         }
         InvestidorEntity investidor = investidorRepository.findByCpf(cpf);
-    
+    return null;
     }
 }

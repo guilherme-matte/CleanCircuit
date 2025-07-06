@@ -58,19 +58,16 @@ public class CarteiraService {
         }).toList();
 
         carteira.put("Criptomoedas", criptoResumo);
-        double totalAplicado = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        double totalAplicado = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
 
-        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
-
+        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
         // repete para os demais tipos...
 
-        double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
-        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream()
-                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
         // repete para os demais tipos...
 
