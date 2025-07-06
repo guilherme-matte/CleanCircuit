@@ -9,6 +9,15 @@ public class ResumoAtivoDTO {
     private double dividendos;
     private double lucroPrejuizo;
     private int cotas;
+    private double cotasFracionadas;
+
+    public double getCotasFracionadas() {
+        return cotasFracionadas;
+    }
+
+    public void setCotasFracionadas(double cotasFracionadas) {
+        this.cotasFracionadas = cotasFracionadas;
+    }
 
     public double getValorAtualTotal() {
         return valorAtualTotal;

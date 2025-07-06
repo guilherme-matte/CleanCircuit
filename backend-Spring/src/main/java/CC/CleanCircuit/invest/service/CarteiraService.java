@@ -2,6 +2,7 @@ package CC.CleanCircuit.invest.service;
 
 import CC.CleanCircuit.invest.dtos.BrapiDTO;
 import CC.CleanCircuit.invest.dtos.ResumoAtivoDTO;
+import CC.CleanCircuit.invest.entities.BaseFracionadoEntity;
 import CC.CleanCircuit.invest.entities.BaseInvestEntity;
 import CC.CleanCircuit.invest.entities.InvestidorEntity;
 import CC.CleanCircuit.invest.repositories.InvestidorRepository;
@@ -30,26 +31,26 @@ public class CarteiraService {
         List<ResumoAtivoDTO> acoes = montarResumo(investidor.getAcoes());
         List<ResumoAtivoDTO> fiis = montarResumo(investidor.getFiis());
         List<ResumoAtivoDTO> etfs = montarResumo(investidor.getEtfs());
-        List<ResumoAtivoDTO> reits = montarResumo(investidor.getReits());
-        List<ResumoAtivoDTO> stocks = montarResumo(investidor.getStocks());
+        List<ResumoAtivoDTO> reits = montarResumoFR(investidor.getReits());
+        List<ResumoAtivoDTO> stocks = montarResumoFR(investidor.getStocks());
         LinkedHashMap<String, Object> carteira = new LinkedHashMap<>();
 
         carteira.put("Ações", acoes);
         carteira.put("Fundos Imobiliários", fiis);
         carteira.put("ETFs", etfs);
         carteira.put("Reits", reits);
-        carteira.put("Ações Estrangeiras", stocks);
+        carteira.put("Stocks", stocks);
 
 
         List<Map<String, Object>> criptoResumo = investidor.getCriptos().stream().map(cripto -> {
             Optional<BrapiDTO> brapi = brapiService.buscarAtivo(cripto.getSigla());
             double precoAtual = brapi.map(BrapiDTO::getPrecoAtual).orElse(0.0);
-            double valorMercado = precoAtual * cripto.getQuantidade();
+            double valorMercado = precoAtual * cripto.getCotas();
 
             Map<String, Object> resumo = new HashMap<>();
             resumo.put("sigla", cripto.getSigla());
-            resumo.put("quantidade", cripto.getQuantidade());
-            resumo.put("total", cripto.getTotal());
+            resumo.put("quantidade", cripto.getCotas());
+            resumo.put("total", cripto.getValorTotal());
             resumo.put("valorMercado", valorMercado);
             resumo.put("precoAtual", precoAtual);
             resumo.put("nome", brapi.map(BrapiDTO::getNomeCurto).orElse(null));
@@ -80,7 +81,27 @@ public class CarteiraService {
         return ApiResponse.resposta(carteira, "Carteira carregada com sucesso", 200);
     }
 
+    private <T extends BaseFracionadoEntity> List<ResumoAtivoDTO> montarResumoFR(List<T> ativos) {
+        return ativos.stream().map(ativo -> {
+            Optional<BrapiDTO> brapi = brapiService.buscarAtivo(ativo.getSigla());
+            double precoAtual = brapi.map(BrapiDTO::getPrecoAtual).orElse(0.0);
 
+            double valorAplicado = ativo.getValorTotal();
+            double lucro = (precoAtual * ativo.getCotas()) - valorAplicado;
+
+            ResumoAtivoDTO dto = new ResumoAtivoDTO();
+            dto.setSigla(ativo.getSigla());
+            dto.setNome(ativo.getNome());
+            dto.setCotasFracionadas(ativo.getCotas());
+            dto.setValorAplicado(valorAplicado);
+            dto.setValorAtual(precoAtual);
+            dto.setValorAtualTotal(precoAtual * dto.getCotas());
+            dto.setDividendos(ativo.getDividendos());
+            dto.setLucroPrejuizo(lucro);
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
     private <T extends BaseInvestEntity> List<ResumoAtivoDTO> montarResumo(List<T> ativos) {
         return ativos.stream().map(ativo -> {
             Optional<BrapiDTO> brapi = brapiService.buscarAtivo(ativo.getSigla());

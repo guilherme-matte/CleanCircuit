@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_stock")
-public class StockEntity extends BaseInvestEntity {
+public class StockEntity extends BaseFracionadoEntity {
 }

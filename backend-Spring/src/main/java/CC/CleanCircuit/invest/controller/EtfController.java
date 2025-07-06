@@ -9,14 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class EtfController {
     @Autowired
     private EtfService service;
 
     @PostMapping("/etf/{cpf}")
     public ResponseEntity<ApiResponseDTO> transacaoEtf(@PathVariable String cpf, @RequestBody AtivoDTO dto) {
-        return service.transacaoEtf(cpf, dto);
+        return service.transacao(dto,cpf);
     }
 }

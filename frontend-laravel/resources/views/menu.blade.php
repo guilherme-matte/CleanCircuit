@@ -82,6 +82,7 @@
                                         <th class="p-2">Cotas</th>
                                         <th class="p-2">Preço Médio</th>
                                         <th class="p-2">Valor de Mercado</th>
+                                        <th class="p-2">Valor total</th>
                                         <th class="p-2">Variação</th>
                                         <th class="p-2">Dividendos</th>
                                     </tr>
@@ -91,7 +92,12 @@
                                         @php
                                             $valorAplicado = $ativo['valorAplicado'];
                                             $valorMercado = $ativo['valorAtual'];
-                                            $cotas = max($ativo['cotas'], 1);
+                                            if ($tipo == 'Stocks' || $tipo == 'Reits' || $tipo == 'Criptomoedas') {
+                                                $cotas = $ativo['cotasFracionadas'];
+                                            } else {
+                                                $cotas = $ativo['cotas'];
+                                            }
+
                                             $precoMedio = $valorAplicado / $cotas;
                                             $lucro = $ativo['lucroPrejuizo'];
                                             $valorTotal = $valorMercado * $cotas;
@@ -104,7 +110,7 @@
                                         <tr class="border-b border-[#444]">
                                             <td class="p-2">{{ strtoupper($ativo['sigla']) }}</td>
                                             <td class="p-2">{{ $ativo['nome'] }}</td>
-                                            <td class="p-2">{{ $ativo['cotas'] }}</td>
+                                            <td class="p-2">{{ $cotas}}</td>
 
                                             <td title="Valor total aplicado: R$ {{ number_format($valorAplicadoTotal, 2, ',', '.') }}"
                                                 class="p-2 relative group cursor-pointer">
@@ -114,6 +120,7 @@
 
                                             {{-- Valor de Mercado --}}
                                             <td class="p-2">R$ {{ number_format($valorMercado, 2, ',', '.') }}</td>
+                                            <td class="p-2">R$ {{ number_format($valorTotal, 2, ',', '.') }}</td>
 
                                             {{-- Variação --}}
                                             <td class="p-2 relative group cursor-pointer">
