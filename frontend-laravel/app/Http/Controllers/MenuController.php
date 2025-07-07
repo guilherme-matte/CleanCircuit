@@ -18,7 +18,7 @@ class MenuController extends Controller
         if ($response->successful()) {
             return view('menu', [
                 'resumo' => $data['status_res'] ?? [],
-                'mensagem' => $data['status_msg']??null
+                'mensagem' => $data['status_msg'] ?? null
             ]);
         }
         throw new \Exception($data['status_msg'] ?? 'erro ao buscar carteira');
