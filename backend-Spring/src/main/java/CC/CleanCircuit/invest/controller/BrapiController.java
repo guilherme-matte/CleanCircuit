@@ -6,6 +6,7 @@ import CC.CleanCircuit.response.ApiResponse;
 import CC.CleanCircuit.response.ApiResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,9 @@ public class BrapiController {
         }
         return ApiResponse.resposta(ativo, "Ativo retornado com sucesso!", 200);
     }
-
-
+    @CrossOrigin(origins = "http://127.0.0.1:8000")
+    @GetMapping("/brapi/autocomplete/{sigla}")
+    public ResponseEntity<ApiResponseDTO> autocompleteSigla(@PathVariable String sigla) {
+        return ApiResponse.resposta(service.autocompletarSigla(sigla), "Auto completar retornado com sucesso!", 200);
+    }
 }

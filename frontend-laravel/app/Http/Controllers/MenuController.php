@@ -23,5 +23,30 @@ class MenuController extends Controller
         }
         throw new \Exception($data['status_msg'] ?? 'erro ao buscar carteira');
     }
+    public function cadastrarAtivo(Request $request)
+    {
+        $tipo = match ($request->tipo) {
+            'Ações' => 'acao',
+            'Fiis' => 'fii',
+            'ETFs' => 'etf',
+            'Reits' => 'reits',
+            'Stocks' => 'stock',
+            'Criptomoedas' => 'cripto',
+            default => back()->with('erro', 'Tipo de ativo inválido.')
 
+        };
+
+        $response = Http::post(env('API_URL') . '/' . $tipo . '/' . session('cpf'), [
+            'sigla' => $request->sigla,
+            'cotas' => $request->cotas,
+            'valorCota' => $request->valorCota,
+            'tipo' => $request->tipoMovimento
+        ]);
+        $data = $response->json();
+
+        if ($response->successful()) {
+            return redirect('/menu')->with('mensagem', $data['status_msg'] ?? null);
+        }
+        throw new \Exception($data['status_msg'] ?? 'erro ao cadastrar ativo');
+    }
 }

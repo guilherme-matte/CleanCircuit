@@ -36,7 +36,7 @@ public class CarteiraService {
         LinkedHashMap<String, Object> carteira = new LinkedHashMap<>();
 
         carteira.put("Ações", acoes);
-        carteira.put("Fundos Imobiliários", fiis);
+        carteira.put("Fiis", fiis);
         carteira.put("ETFs", etfs);
         carteira.put("Reits", reits);
         carteira.put("Stocks", stocks);
@@ -61,13 +61,13 @@ public class CarteiraService {
         carteira.put("Criptomoedas", criptoResumo);
         double totalAplicado = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
 
-        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
         totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
         // repete para os demais tipos...
 
         double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
-        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fundos Imobiliários")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
         totalAtual += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
         // repete para os demais tipos...

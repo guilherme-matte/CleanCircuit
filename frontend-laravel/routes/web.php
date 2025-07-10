@@ -14,7 +14,7 @@ use App\Http\Controllers\MenuController;
 
 Route::get('/menu', [MenuController::class, 'showMenu']);
 Route::get('/', action: [MenuController::class, 'showMenu']);
-
+Route::post('/menu',[MenuController::class,'cadastrarAtivo']);
 use App\Http\Controllers\PerfilController;
 
 Route::get('/perfil', [PerfilController::class, 'showPerfil']);

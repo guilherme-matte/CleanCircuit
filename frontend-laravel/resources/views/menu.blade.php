@@ -73,15 +73,7 @@
             @foreach ($resumo as $tipo => $ativos)
                 @if (is_array($ativos) && !empty($ativos))
                     @php
-                        $tiposValidos = [
-                            'Ações',
-                            'Fundos Imobiliários',
-                            'ETFs',
-                            'Criptomoedas',
-                            'Reits',
-                            'Stocks',
-                            'Renda Fixa',
-                        ];
+                        $tiposValidos = ['Ações', 'Fiis', 'ETFs', 'Criptomoedas', 'Reits', 'Stocks', 'Renda Fixa'];
                     @endphp
 
                     @if (in_array($tipo, $tiposValidos))
@@ -172,26 +164,27 @@
             <button onclick="fecharModal()"
                 class="absolute top-2 right-3 text-xl text-white hover:text-red-400">&times;</button>
             <h2 id="modalTitulo" class="text-2xl mb-4 font-bold">Adicionar Ativo</h2>
-            <input type="hidden" name="tipo" id="tipoInput" value="">
-            <form action="#" method="POST" class="space-y-4">
+            <form action="/menu" method="POST" class="space-y-4">
                 @csrf
-                <input type="hidden" name="tipo" value="{{ $tipo }}">
+                <input type="hidden" name="tipo" id="tipoInput" value="">
 
-                <div>
+                <div class="relative">
                     <label for="sigla" class="block text-sm">Sigla</label>
-                    <input type="text" name="sigla" id="sigla"
+                    <input autocomplete="off" type="text" name="sigla" id="sigla" autocomplete="off"
                         class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
+                    <ul id="sugestoes"
+                        class="absolute z-50 w-full bg-[#2e2e3e] border border-[#444] rounded mt-1 hidden"></ul>
                 </div>
 
                 <div>
                     <label for="cotas" class="block text-sm">Cotas</label>
-                    <input type="number" step="any" name="cotas" id="cotas"
+                    <input type="number" step="any" name="cotas" id="cotas" autocomplete="off"
                         class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
                 </div>
 
                 <div>
                     <label for="valorCota" class="block text-sm">Valor por Cota</label>
-                    <input type="number" step="any" name="valorCota" id="valorCota"
+                    <input type="number" step="any" name="valorCota" id="valorCota" autocomplete="off"
                         class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
                 </div>
 
@@ -203,7 +196,11 @@
                         <option value="venda">Venda</option>
                     </select>
                 </div>
-
+                <div>
+                    <label for="valorTotal" class="block text-sm">Valor Total</label>
+                    <input type="number" step="any" id="valorTotal" name="valorTotal" readonly
+                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2 text-gray-400">
+                </div>
                 <div class="text-right">
                     <button type="submit"
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded">
@@ -218,29 +215,133 @@
             document.getElementById('modalAtivo').classList.remove('hidden');
             document.getElementById('tipoInput').value = tipo;
             document.getElementById('modalTitulo').innerText = "Adicionar " + tipo;
+
+
         }
 
         function fecharModal() {
             document.getElementById('modalAtivo').classList.add('hidden');
+            document.getElementById('sigla').value = '';
+            document.getElementById('cotas').value = '';
+            document.getElementById('valorCota').value = '';
+            document.getElementById('tipoMovimento').selectedIndex = 0;
+            document.getElementById('valorTotal').value = '';
+            document.getElementById('tipoInput').value = '';
+
+
+
+            sugestoes.innerHTML = '';
+            sugestoes.classList.add('hidden');
         }
-        document.getElementById('sigla').addEventListener('blur', function() {
-            const sigla = this.value;
+        const inputSigla = document.getElementById('sigla');
+        const sugestoes = document.getElementById('sugestoes');
 
+        let buscaDisparadaPeloClique = false;
 
-            if (sigla !== '') {
-                fetch(`/cotacao/${encodeURIComponent(sigla)}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Erro ao buscar ativo');
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('valorCota').value = data.preco;
-                        console.log('Nome do ativo:', data.nome);
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Ativo não encontrado');
-                    });
+        const inputCotas = document.getElementById('cotas');
+        const inputValorCota = document.getElementById('valorCota');
+        const inputValorTotal = document.getElementById('valorTotal');
+
+        function atualizarValorTotal() {
+            const cotas = parseFloat(inputCotas.value);
+            const valorCota = parseFloat(inputValorCota.value);
+
+            if (!isNaN(cotas) && !isNaN(valorCota)) {
+                inputValorTotal.value = (cotas * valorCota).toFixed(2);
+            } else {
+                inputValorTotal.value = '';
+            }
+        }
+        inputCotas.addEventListener('input', atualizarValorTotal);
+        inputValorCota.addEventListener('input', atualizarValorTotal);
+
+        // Função para buscar dados do ativo
+        function buscarAtivo(sigla) {
+            if (!sigla) return;
+
+            fetch(`/cotacao/${encodeURIComponent(sigla)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao buscar ativo');
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('valorCota').value = data.preco;
+                    console.log('Nome do ativo:', data.nome);
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Ativo não encontrado');
+                });
+        }
+
+        // Evento input para autocomplete
+        inputSigla.addEventListener('input', function() {
+            const valor = this.value.trim();
+
+            if (valor.length < 2) {
+                sugestoes.innerHTML = '';
+                sugestoes.classList.add('hidden');
+                return;
+            }
+
+            fetch(`http://localhost:8080/brapi/autocomplete/${encodeURIComponent(valor)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultados = data.status_res || [];
+
+                    if (resultados.length > 0) {
+                        sugestoes.innerHTML = '';
+                        resultados.forEach(sigla => {
+                            const item = document.createElement('li');
+                            item.textContent = sigla;
+                            item.classList.add('p-2', 'cursor-pointer', 'hover:bg-[#3a3a4a]');
+
+                            item.addEventListener('mousedown', (e) => {
+                                e.preventDefault(); // evita o blur antes do clique ser tratado
+                                inputSigla.value = sigla;
+                                sugestoes.innerHTML = '';
+                                sugestoes.classList.add('hidden');
+
+                                buscaDisparadaPeloClique = true;
+                                buscarAtivo(sigla);
+                            });
+
+                            sugestoes.appendChild(item);
+                        });
+
+                        sugestoes.classList.remove('hidden');
+                    } else {
+                        sugestoes.innerHTML = '';
+                        sugestoes.classList.add('hidden');
+                    }
+                });
+        });
+
+        // Evento blur para buscar se usuário digitou direto
+        inputSigla.addEventListener('blur', function() {
+            if (buscaDisparadaPeloClique) {
+                // Se já buscou pelo clique, limpa a flag e não busca novamente
+                buscaDisparadaPeloClique = false;
+                return;
+            }
+
+            const sigla = this.value.trim();
+
+            if (sigla.length >= 2) {
+                buscarAtivo(sigla);
+            }
+        });
+        inputSigla.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                sugestoes.innerHTML = '';
+                sugestoes.classList.add('hidden');
+            }
+        });
+        // Esconder lista de sugestões ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!inputSigla.parentElement.contains(e.target)) {
+                sugestoes.innerHTML = '';
+                sugestoes.classList.add('hidden');
             }
         });
     </script>
