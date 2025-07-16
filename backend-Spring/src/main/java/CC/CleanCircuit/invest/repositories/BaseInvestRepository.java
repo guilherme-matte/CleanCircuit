@@ -7,5 +7,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface BaseInvestRepository<T extends BaseInvestEntity> extends JpaRepository<T, Long> {
     T findBySiglaAndInvestidor_Cpf(String sigla, String cpf);
-    T deleteBySiglaAndInvestidor_Id(String sigla, Long id);
+    void deleteBySiglaAndInvestidor_Id(String sigla, Long id);
 }

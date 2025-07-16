@@ -21,12 +21,14 @@ public abstract class BaseService<T extends BaseInvestEntity> {
     private final InvestidorRepository investidorRepository;
     private final BrapiService brapiService;
 
-    protected BaseService(BaseInvestRepository<T> repository, InvestidorRepository investidorRepository, BrapiService brapiService) {
+    protected BaseService(BaseInvestRepository<T> repository, InvestidorRepository investidorRepository,
+            BrapiService brapiService) {
         this.repository = repository;
         this.investidorRepository = investidorRepository;
         this.brapiService = brapiService;
     }
-@Transactional
+
+    @Transactional
     public ResponseEntity<ApiResponseDTO> transacao(@NotNull AtivoDTO dto, String cpf) {
         if (dto.getCotas() <= 0) {
             return ApiResponse.resposta(null, "Quantidade de cotas menor ou igual a zero!", 409);
@@ -55,9 +57,10 @@ public abstract class BaseService<T extends BaseInvestEntity> {
             ativo.setValorTotal(ativo.getValorTotal() + (dto.getCotas() * dto.getValorCota()));
         } else {
             if (ativo.getCotas() <= dto.getCotas()) {
-
-                repository.delete(ativo);
-                return ApiResponse.resposta(null, "Ativo " + ativo.getSigla().toUpperCase() + " deletado(vendido) com sucesso!", 202);
+                System.out.println(dto.getSigla() + " - " + investidor.getId());
+                repository.deleteBySiglaAndInvestidor_Id(dto.getSigla().toLowerCase(), investidor.getId());
+                return ApiResponse.resposta(null,
+                        "Ativo " + ativo.getSigla().toUpperCase() + " deletado(vendido) com sucesso!", 202);
             }
             ativo.setCotas(ativo.getCotas() - dto.getCotas());
             ativo.setValorTotal(ativo.getValorTotal() - (dto.getCotas() * dto.getValorCota()));
