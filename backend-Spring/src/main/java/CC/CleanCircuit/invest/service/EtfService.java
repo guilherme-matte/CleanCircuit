@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EtfService extends BaseService<EtfEntity>{
 
-    protected EtfService(BaseInvestRepository<EtfEntity> repository, InvestidorRepository investidorRepository) {
-        super(repository, investidorRepository);
+    protected EtfService(BaseInvestRepository<EtfEntity> repository, InvestidorRepository investidorRepository,BrapiService brapiService) {
+        super(repository, investidorRepository,brapiService);
     }
 
     @Override

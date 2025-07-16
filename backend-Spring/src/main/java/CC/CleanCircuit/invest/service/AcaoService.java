@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 public class AcaoService extends BaseService<AcaoEntity> {
 
 
-    protected AcaoService(BaseInvestRepository<AcaoEntity> repository, InvestidorRepository investidorRepository) {
-        super(repository, investidorRepository);
+    protected AcaoService(BaseInvestRepository<AcaoEntity> repository, InvestidorRepository investidorRepository,BrapiService brapiService) {
+        super(repository, investidorRepository, brapiService);
     }
 
 

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FiiService extends BaseService<FiiEntity>{
 
-    protected FiiService(BaseInvestRepository<FiiEntity> repository, InvestidorRepository investidorRepository) {
-        super(repository, investidorRepository);
+    protected FiiService(BaseInvestRepository<FiiEntity> repository, InvestidorRepository investidorRepository,BrapiService brapiService) {
+        super(repository, investidorRepository,brapiService);
     }
 
     @Override

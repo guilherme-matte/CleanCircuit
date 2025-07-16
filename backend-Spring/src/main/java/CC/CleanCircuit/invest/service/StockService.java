@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class StockService extends BaseFracionadoService<StockEntity> {
 
 
-    public StockService(BaseFracionadoRepository<StockEntity> repository, InvestidorRepository investidorRepository) {
-        super(repository, investidorRepository);
+    public StockService(BaseFracionadoRepository<StockEntity> repository, InvestidorRepository investidorRepository,BrapiService brapiService) {
+        super(repository, investidorRepository,brapiService);
     }
 
     @Override

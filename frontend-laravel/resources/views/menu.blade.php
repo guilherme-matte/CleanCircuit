@@ -12,6 +12,30 @@
             transition: opacity 1s ease-in-out;
             opacity: 0;
         }
+
+        /* Remove setas dos inputs number (Chrome, Safari, Edge) */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Remove setas dos inputs number (Firefox) */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Remove setas do select (apenas aparência, não remove funcionalidade) */
+        select::-ms-expand {
+            display: none;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: none;
+        }
     </style>
 </head>
 
@@ -34,7 +58,7 @@
     @endif
 
     <!-- Menu Lateral -->
-    <aside class="w-64 bg-[#2e2e3e] p-6 space-y-4">
+    <aside class="w-64 bg-[#2e2e3e] p-6 space-y-4 fixed top-0 left-0 h-full overflow-y-auto">
         <h2 class="content-center"><img src="{{ asset('images/logo.png') }} " alt=""></h2>
         <nav class="flex flex-col space-y-2">
             <a href="/menu" class="hover:text-[#5e60ce]">Dashboard</a>
@@ -43,7 +67,7 @@
         </nav>
     </aside>
     <!-- Conteúdo -->
-    <main class="flex-1 p-8 bg-[#1e1e2e]">
+    <main class="ml-64 p-8 bg-[#1e1e2e] flex-1">
         <h1 class="text-3xl font-bold mb-6">Resumo da Carteira</h1>
         <!-- Cards com indicadores -->
 
@@ -164,37 +188,43 @@
             <button onclick="fecharModal()"
                 class="absolute top-2 right-3 text-xl text-white hover:text-red-400">&times;</button>
             <h2 id="modalTitulo" class="text-2xl mb-4 font-bold">Adicionar Ativo</h2>
-            <form action="/menu" method="POST" class="space-y-4">
+            <form action="/menu" method="POST" class="space-y-4" id="formAtivo" novalidate>
                 @csrf
                 <input type="hidden" name="tipo" id="tipoInput" value="">
-
                 <div class="relative">
                     <label for="sigla" class="block text-sm">Sigla</label>
                     <input autocomplete="off" type="text" name="sigla" id="sigla" autocomplete="off"
-                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
+                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2" required>
                     <ul id="sugestoes"
                         class="absolute z-50 w-full bg-[#2e2e3e] border border-[#444] rounded mt-1 hidden"></ul>
+                    <span class="text-red-400 text-xs hidden" id="erroSigla">Campo obrigatório</span>
                 </div>
-
-                <div>
+                <div class="relative">
                     <label for="cotas" class="block text-sm">Cotas</label>
                     <input type="number" step="any" name="cotas" id="cotas" autocomplete="off"
-                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
+                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2" required>
+                    <span class="text-red-400 text-xs hidden" id="erroCotas">Campo obrigatório</span>
                 </div>
-
-                <div>
+                <div class="relative">
                     <label for="valorCota" class="block text-sm">Valor por Cota</label>
                     <input type="number" step="any" name="valorCota" id="valorCota" autocomplete="off"
-                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
+                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2" required>
+                    <span class="text-red-400 text-xs hidden" id="erroValorCota">Campo obrigatório</span>
                 </div>
-
-                <div>
+                <div class="relative">
                     <label for="tipoMovimento" class="block text-sm">Tipo</label>
                     <select name="tipoMovimento" id="tipoMovimento"
-                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2">
+                        class="w-full rounded bg-[#1e1e2e] border border-[#444] p-2 pr-8 appearance-none" required>
+                        <option value="">Selecione</option>
                         <option value="compra">Compra</option>
                         <option value="venda">Venda</option>
                     </select>
+                    <span class="pointer-events-none absolute right-3 top-9 flex items-center h-5 text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </span>
+                    <span class="text-red-400 text-xs hidden" id="erroTipo">Campo obrigatório</span>
                 </div>
                 <div>
                     <label for="valorTotal" class="block text-sm">Valor Total</label>
@@ -275,8 +305,11 @@
         }
 
         // Evento input para autocomplete
+        let selectedSuggestionIndex = -1;
+
         inputSigla.addEventListener('input', function() {
             const valor = this.value.trim();
+            selectedSuggestionIndex = -1;
 
             if (valor.length < 2) {
                 sugestoes.innerHTML = '';
@@ -291,24 +324,23 @@
 
                     if (resultados.length > 0) {
                         sugestoes.innerHTML = '';
-                        resultados.forEach(sigla => {
+                        resultados.forEach((sigla, idx) => {
                             const item = document.createElement('li');
                             item.textContent = sigla;
                             item.classList.add('p-2', 'cursor-pointer', 'hover:bg-[#3a3a4a]');
+                            item.setAttribute('data-index', idx);
 
                             item.addEventListener('mousedown', (e) => {
-                                e.preventDefault(); // evita o blur antes do clique ser tratado
+                                e.preventDefault();
                                 inputSigla.value = sigla;
                                 sugestoes.innerHTML = '';
                                 sugestoes.classList.add('hidden');
-
                                 buscaDisparadaPeloClique = true;
                                 buscarAtivo(sigla);
                             });
 
                             sugestoes.appendChild(item);
                         });
-
                         sugestoes.classList.remove('hidden');
                     } else {
                         sugestoes.innerHTML = '';
@@ -316,6 +348,39 @@
                     }
                 });
         });
+
+        inputSigla.addEventListener('keydown', function(e) {
+            const items = sugestoes.querySelectorAll('li');
+            if (sugestoes.classList.contains('hidden') || items.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
+                updateSuggestionHighlight(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
+                updateSuggestionHighlight(items);
+            } else if (e.key === 'Enter') {
+                if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < items.length) {
+                    e.preventDefault();
+                    items[selectedSuggestionIndex].dispatchEvent(new MouseEvent('mousedown'));
+                }
+            } else if (e.key === 'Tab') {
+                sugestoes.innerHTML = '';
+                sugestoes.classList.add('hidden');
+            }
+        });
+
+        function updateSuggestionHighlight(items) {
+            items.forEach((item, idx) => {
+                if (idx === selectedSuggestionIndex) {
+                    item.classList.add('bg-[#3a3a4a]');
+                } else {
+                    item.classList.remove('bg-[#3a3a4a]');
+                }
+            });
+        }
 
         // Evento blur para buscar se usuário digitou direto
         inputSigla.addEventListener('blur', function() {
@@ -342,6 +407,51 @@
             if (!inputSigla.parentElement.contains(e.target)) {
                 sugestoes.innerHTML = '';
                 sugestoes.classList.add('hidden');
+            }
+        });
+
+        const formAtivo = document.getElementById('formAtivo');
+        formAtivo.addEventListener('submit', function(e) {
+            let valido = true;
+            // Sigla
+            if (!inputSigla.value.trim()) {
+                valido = false;
+                inputSigla.classList.add('border-red-500');
+                document.getElementById('erroSigla').classList.remove('hidden');
+            } else {
+                inputSigla.classList.remove('border-red-500');
+                document.getElementById('erroSigla').classList.add('hidden');
+            }
+            // Cotas
+            if (!inputCotas.value.trim()) {
+                valido = false;
+                inputCotas.classList.add('border-red-500');
+                document.getElementById('erroCotas').classList.remove('hidden');
+            } else {
+                inputCotas.classList.remove('border-red-500');
+                document.getElementById('erroCotas').classList.add('hidden');
+            }
+            // ValorCota
+            if (!inputValorCota.value.trim()) {
+                valido = false;
+                inputValorCota.classList.add('border-red-500');
+                document.getElementById('erroValorCota').classList.remove('hidden');
+            } else {
+                inputValorCota.classList.remove('border-red-500');
+                document.getElementById('erroValorCota').classList.add('hidden');
+            }
+            // Tipo
+            const tipoMovimento = document.getElementById('tipoMovimento');
+            if (!tipoMovimento.value) {
+                valido = false;
+                tipoMovimento.classList.add('border-red-500');
+                document.getElementById('erroTipo').classList.remove('hidden');
+            } else {
+                tipoMovimento.classList.remove('border-red-500');
+                document.getElementById('erroTipo').classList.add('hidden');
+            }
+            if (!valido) {
+                e.preventDefault();
             }
         });
     </script>

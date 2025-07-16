@@ -32,7 +32,7 @@ class MenuController extends Controller
             'Reits' => 'reits',
             'Stocks' => 'stock',
             'Criptomoedas' => 'cripto',
-            default => back()->with('erro', 'Tipo de ativo inválido.')
+            default => back()->with('error', 'Tipo de ativo inválido.')
 
         };
 

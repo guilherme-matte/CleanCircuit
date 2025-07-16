@@ -1,6 +1,7 @@
 package CC.CleanCircuit.invest.service;
 
 import CC.CleanCircuit.invest.dtos.AtivoFracionadoDTO;
+import CC.CleanCircuit.invest.dtos.BrapiDTO;
 import CC.CleanCircuit.invest.entities.BaseFracionadoEntity;
 import CC.CleanCircuit.invest.entities.InvestidorEntity;
 import CC.CleanCircuit.invest.repositories.BaseFracionadoRepository;
@@ -12,15 +13,18 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public abstract class BaseFracionadoService<T extends BaseFracionadoEntity> {
     private final BaseFracionadoRepository<T> repository;
     private final InvestidorRepository investidorRepository;
+    private final BrapiService brapiService;
 
-
-    public BaseFracionadoService(BaseFracionadoRepository<T> repository, InvestidorRepository investidorRepository) {
+    public BaseFracionadoService(BaseFracionadoRepository<T> repository, InvestidorRepository investidorRepository, BrapiService brapiService) {
         this.repository = repository;
         this.investidorRepository = investidorRepository;
+        this.brapiService = brapiService;
     }
 
     @Transactional
@@ -37,10 +41,11 @@ public abstract class BaseFracionadoService<T extends BaseFracionadoEntity> {
         T ativo = repository.findBySiglaAndInvestidor_Cpf(dto.getSigla(), cpf);
 
         if (ativo == null) {
+            Optional<BrapiDTO> brapi = brapiService.buscarAtivo(dto.getSigla());
             ativo = criarInstanciaVazia();
             ativo.setInvestidor(investidor);
             ativo.setSigla(dto.getSigla().toUpperCase());
-            ativo.setNome(dto.getSigla().toLowerCase());
+            ativo.setNome(brapi.get().getNomeCurto());
             ativo.setCotas(0.0);
             ativo.setValorTotal(0.0);
             ativo.setDividendos(0.0);
@@ -51,7 +56,8 @@ public abstract class BaseFracionadoService<T extends BaseFracionadoEntity> {
             ativo.setValorTotal(ativo.getValorTotal() + (dto.getCotas() * dto.getValorCota()));
         } else {
             if (ativo.getCotas() <= dto.getCotas()) {
-                repository.deleteBySiglaAndInvestidor_Cpf(ativo.getSigla(), cpf);
+                Long id = investidor.getId();
+                repository.deleteBySiglaAndInvestidor_Id(ativo.getSigla(), id);
                 return ApiResponse.resposta(null, "Ativo " + ativo.getSigla().toUpperCase() + " deletado(vendido) com sucesso!", 202);
             }
             ativo.setCotas(ativo.getCotas() - dto.getCotas());
