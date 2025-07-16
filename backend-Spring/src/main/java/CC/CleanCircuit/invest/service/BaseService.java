@@ -39,7 +39,7 @@ public abstract class BaseService<T extends BaseInvestEntity> {
             return ApiResponse.resposta(null, "Investidor não encontrado", 404);
         }
 
-        T ativo = repository.findBySiglaAndInvestidor_Cpf(dto.getSigla(), cpf);
+        T ativo = repository.findBySiglaAndInvestidor_Cpf(dto.getSigla().toUpperCase(), cpf);
 
         if (ativo == null) {
             Optional<BrapiDTO> brapi = brapiService.buscarAtivo(dto.getSigla());
@@ -58,7 +58,7 @@ public abstract class BaseService<T extends BaseInvestEntity> {
         } else {
             if (ativo.getCotas() <= dto.getCotas()) {
                 System.out.println(dto.getSigla() + " - " + investidor.getId());
-                repository.deleteBySiglaAndInvestidor_Id(dto.getSigla().toLowerCase(), investidor.getId());
+                repository.deleteBySiglaAndInvestidor_Id(dto.getSigla().trim().toUpperCase(), investidor.getId());
                 return ApiResponse.resposta(null,
                         "Ativo " + ativo.getSigla().toUpperCase() + " deletado(vendido) com sucesso!", 202);
             }

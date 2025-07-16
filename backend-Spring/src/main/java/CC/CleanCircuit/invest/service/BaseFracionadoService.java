@@ -57,7 +57,8 @@ public abstract class BaseFracionadoService<T extends BaseFracionadoEntity> {
         } else {
             if (ativo.getCotas() <= dto.getCotas()) {
                 Long id = investidor.getId();
-                repository.deleteBySiglaAndInvestidor_Id(ativo.getSigla(), id);
+                System.out.println(dto.getSigla() + " - " + id);
+                repository.deleteBySiglaAndInvestidor_Id(ativo.getSigla().toLowerCase(), id);
                 return ApiResponse.resposta(null, "Ativo " + ativo.getSigla().toUpperCase() + " deletado(vendido) com sucesso!", 202);
             }
             ativo.setCotas(ativo.getCotas() - dto.getCotas());

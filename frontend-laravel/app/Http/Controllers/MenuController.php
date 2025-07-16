@@ -37,7 +37,7 @@ class MenuController extends Controller
         };
 
         $response = Http::post(env('API_URL') . '/' . $tipo . '/' . session('cpf'), [
-            'sigla' => $request->sigla,
+            'sigla' =>  strtoupper($request->sigla),
             'cotas' => $request->cotas,
             'valorCota' => $request->valorCota,
             'tipo' => $request->tipoMovimento

@@ -22,7 +22,6 @@ public class CarteiraService {
     @Autowired
     private BrapiService brapiService;
 
-
     public ResponseEntity<ApiResponseDTO> retornarCarteira(String cpf) {
         InvestidorEntity investidor = investidorRepository.findByCpf(cpf);
         if (investidor == null) {
@@ -41,7 +40,6 @@ public class CarteiraService {
         carteira.put("Reits", reits);
         carteira.put("Stocks", stocks);
 
-
         List<Map<String, Object>> criptoResumo = investidor.getCriptos().stream().map(cripto -> {
             Optional<BrapiDTO> brapi = brapiService.buscarAtivo(cripto.getSigla());
             double precoAtual = brapi.map(BrapiDTO::getPrecoAtual).orElse(0.0);
@@ -59,16 +57,22 @@ public class CarteiraService {
         }).toList();
 
         carteira.put("Criptomoedas", criptoResumo);
-        double totalAplicado = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        double totalAplicado = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
 
-        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
-        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
+        totalAplicado += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAplicado).sum();
         // repete para os demais tipos...
 
-        double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        double totalAtual = ((List<ResumoAtivoDTO>) carteira.get("Ações")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
-        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
-        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream().mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("Fiis")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
+        totalAtual += ((List<ResumoAtivoDTO>) carteira.get("ETFs")).stream()
+                .mapToDouble(ResumoAtivoDTO::getValorAtualTotal).sum();
 
         // repete para os demais tipos...
 
@@ -102,6 +106,7 @@ public class CarteiraService {
             return dto;
         }).collect(Collectors.toList());
     }
+
     private <T extends BaseInvestEntity> List<ResumoAtivoDTO> montarResumo(List<T> ativos) {
         return ativos.stream().map(ativo -> {
             Optional<BrapiDTO> brapi = brapiService.buscarAtivo(ativo.getSigla());

@@ -93,92 +93,97 @@
         </div>
 
         <!-- Ativos agrupados por tipo -->
+        @php
+            $tiposValidos = ['Ações', 'Fiis', 'ETFs', 'Criptomoedas', 'Reits', 'Stocks', 'Renda Fixa'];
+        @endphp
+
         <div class="space-y-10">
-            @foreach ($resumo as $tipo => $ativos)
-                @if (is_array($ativos) && !empty($ativos))
-                    @php
-                        $tiposValidos = ['Ações', 'Fiis', 'ETFs', 'Criptomoedas', 'Reits', 'Stocks', 'Renda Fixa'];
-                    @endphp
+            @foreach ($tiposValidos as $tipo)
+                @php
+                    $ativos = $resumo[$tipo] ?? [];
+                @endphp
+                <section class="bg-[#2e2e3e] p-0 pt-6 pb-6 rounded-xl shadow-md mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-center w-full">{{ $tipo }}</h2>
+                        @if (!empty($ativos))
+                            <button onclick="abrirModal('{{ $tipo }}')"
+                                class="absolute right-10 w-8 h-8 flex items-center justify-center rounded-full bg-[#2e2e3e] text-white border border-[#444] hover:bg-[#252536] transition duration-200">
+                                +
+                            </button>
+                        @endif
+                    </div>
+                    <div class="border-t-4 border-[#5e60ce] w-full mb-6"></div>
+                    <div class="px-6">
+                    @if (!empty($ativos))
+                        <div class="overflow-x-auto">
+                            <table class="table-auto w-full text-left text-sm">
+                                <thead>
+                                    <tr class="text-[#a6accd] border-b border-[#444]">
+                                        <th class="p-2 text-center">Sigla</th>
+                                        <th class="p-2 text-center">Nome</th>
+                                        <th class="p-2 text-center">Cotas</th>
+                                        <th class="p-2 text-center">Preço Médio</th>
+                                        <th class="p-2 text-center">Valor de Mercado</th>
+                                        <th class="p-2 text-center">Valor total</th>
+                                        <th class="p-2 text-center">Variação</th>
+                                        <th class="p-2 text-center">Dividendos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($ativos as $ativo)
+                                        @php
+                                            $valorAplicado = $ativo['valorAplicado'];
+                                            $valorMercado = $ativo['valorAtual'];
+                                            if ($tipo == 'Stocks' || $tipo == 'Reits' || $tipo == 'Criptomoedas') {
+                                                $currency = 'USD';
+                                                $cotas = $ativo['cotasFracionadas'];
+                                            } else {
+                                                $currency = 'BRL';
+                                                $cotas = $ativo['cotas'];
+                                            }
 
-                    @if (in_array($tipo, $tiposValidos))
-                        <section class="bg-[#2e2e3e] p-6 rounded-xl shadow-md mb-8">
-                            <div class="flex justify-between items-center mb-4">
-                                <h2 class="text-xl font-semibold">{{ $tipo }}</h2>
-                                <button onclick="abrirModal('{{ $tipo }}')"
-                                    class="w-8 h-8 flex items-center justify-center rounded-full bg-[#2e2e3e] text-white border border-[#444] hover:bg-[#252536] transition duration-200">
-                                    +
-                                </button>
-                            </div>
-
-                            <div class="overflow-x-auto">
-                                <table class="table-auto w-full text-left text-sm">
-                                    <thead>
-                                        <tr class="text-[#a6accd] border-b border-[#444]">
-                                            <th class="p-2">Sigla</th>
-                                            <th class="p-2">Nome</th>
-                                            <th class="p-2">Cotas</th>
-                                            <th class="p-2">Preço Médio</th>
-                                            <th class="p-2">Valor de Mercado</th>
-                                            <th class="p-2">Valor total</th>
-                                            <th class="p-2">Variação</th>
-                                            <th class="p-2">Dividendos</th>
+                                            $precoMedio = $valorAplicado / $cotas;
+                                            $lucro = $ativo['lucroPrejuizo'];
+                                            $valorTotal = $valorMercado * $cotas;
+                                            $valorAplicadoTotal = $precoMedio * $cotas;
+                                            $variacao =
+                                                $valorAplicado > 0
+                                                    ? (($valorMercado - $precoMedio) / $precoMedio) * 100
+                                                    : 0;
+                                        @endphp
+                                        <tr class="border-b border-[#444]">
+                                            <td class="p-2 text-center">{{ strtoupper($ativo['sigla']) }}</td>
+                                            <td class="p-2 text-center">{{ $ativo['nome'] }}</td>
+                                            <td class="p-2 text-center">{{ $cotas }}</td>
+                                            <td title="Valor total aplicado: R$ {{ number_format($valorAplicadoTotal, 2, ',', '.') }}"
+                                                class="p-2 relative group cursor-pointer text-center">
+                                                R$ {{ number_format($precoMedio, 2, ',', '.') }}
+                                            </td>
+                                            <td class="p-2 text-center">R$ {{ number_format($valorMercado, 2, ',', '.') }}</td>
+                                            <td class="p-2 text-center">R$ {{ number_format($valorTotal, 2, ',', '.') }}</td>
+                                            <td class="p-2 relative group cursor-pointer text-center">
+                                                <span title="Valor real: R$ {{ number_format($lucro, 2, ',', '.') }}"
+                                                    class="{{ $variacao >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                                                    {{ number_format($variacao, 2, ',', '.') }}%
+                                                </span>
+                                            </td>
+                                            <td class="p-2 text-center">R$
+                                                {{ number_format($ativo['dividendos'], 2, ',', '.') }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($ativos as $ativo)
-                                            @php
-                                                $valorAplicado = $ativo['valorAplicado'];
-                                                $valorMercado = $ativo['valorAtual'];
-                                                if ($tipo == 'Stocks' || $tipo == 'Reits' || $tipo == 'Criptomoedas') {
-                                                    $currency = 'USD';
-                                                    $cotas = $ativo['cotasFracionadas'];
-                                                } else {
-                                                    $currency = 'BRL';
-                                                    $cotas = $ativo['cotas'];
-                                                }
-
-                                                $precoMedio = $valorAplicado / $cotas;
-                                                $lucro = $ativo['lucroPrejuizo'];
-                                                $valorTotal = $valorMercado * $cotas;
-                                                $valorAplicadoTotal = $precoMedio * $cotas;
-                                                $variacao =
-                                                    $valorAplicado > 0
-                                                        ? (($valorMercado - $precoMedio) / $precoMedio) * 100
-                                                        : 0;
-                                            @endphp
-                                            <tr class="border-b border-[#444]">
-                                                <td class="p-2">{{ strtoupper($ativo['sigla']) }}</td>
-                                                <td class="p-2">{{ $ativo['nome'] }}</td>
-                                                <td class="p-2">{{ $cotas }}</td>
-
-                                                <td title="Valor total aplicado: R$ {{ number_format($valorAplicadoTotal, 2, ',', '.') }}"
-                                                    class="p-2 relative group cursor-pointer">
-                                                    R$ {{ number_format($precoMedio, 2, ',', '.') }}
-                                                </td>
-
-                                                <td class="p-2">R$ {{ number_format($valorMercado, 2, ',', '.') }}
-                                                </td>
-                                                <td class="p-2">R$ {{ number_format($valorTotal, 2, ',', '.') }}
-                                                </td>
-
-                                                <td class="p-2 relative group cursor-pointer">
-                                                    <span
-                                                        title="Valor real: R$ {{ number_format($lucro, 2, ',', '.') }}"
-                                                        class="{{ $variacao >= 0 ? 'text-green-400' : 'text-red-400' }}">
-                                                        {{ number_format($variacao, 2, ',', '.') }}%
-                                                    </span>
-                                                </td>
-
-                                                <td class="p-2">R$
-                                                    {{ number_format($ativo['dividendos'], 2, ',', '.') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-10">
+                            <p class="text-gray-400 mb-4">Nenhum ativo cadastrado.</p>
+                            <button onclick="abrirModal('{{ $tipo }}')"
+                                class="w-12 h-12 flex items-center justify-center rounded-full bg-[#2e2e3e] text-white border border-[#444] hover:bg-[#252536] text-3xl transition duration-200">
+                                +
+                            </button>
+                        </div>
                     @endif
-                @endif
+                </section>
             @endforeach
         </div>
     </main>
@@ -220,7 +225,8 @@
                         <option value="venda">Venda</option>
                     </select>
                     <span class="pointer-events-none absolute right-3 top-9 flex items-center h-5 text-gray-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </span>
