@@ -58,13 +58,57 @@
     @endif
 
     <!-- Menu Lateral -->
-    <aside class="w-64 bg-[#2e2e3e] p-6 space-y-4 fixed top-0 left-0 h-full overflow-y-auto">
-        <h2 class="content-center"><img src="{{ asset('images/logo.png') }} " alt=""></h2>
-        <nav class="flex flex-col space-y-2">
-            <a href="/menu" class="hover:text-[#5e60ce]">Dashboard</a>
-            <a href="/perfil" class="hover:text-[#5e60ce]">Editar Perfil</a>
-            <a href="/logout" class="hover:text-[#5e60ce]">Sair</a>
-        </nav>
+    <aside
+        class="w-64 bg-[#2e2e3e] p-6 space-y-4 fixed top-0 left-0 h-full overflow-y-auto flex flex-col justify-between">
+        <div>
+            <h2 class="content-center">
+                <a href="/menu">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="cursor-pointer">
+                </a>
+            </h2>
+            <nav class="flex flex-col space-y-2 mt-4">
+                <!-- apenas dashboard -->
+            </nav>
+        </div>
+
+        <!-- USUÁRIO -->
+        <div
+            class="flex items-center flex-nowrap gap-3 bg-[#232336] rounded-lg p-3 mt-6 hover:bg-[#35355a] transition relative overflow-hidden select-none">
+            <!-- Foto e nome levam ao perfil -->
+            <a href="/perfil" class="flex items-center gap-3 flex-1 min-w-0">
+                <div class="w-10 h-10 rounded-full bg-[#444] flex items-center justify-center overflow-hidden shrink-0">
+                    @if (session('urlProfileImage'))
+                        <img src="{{ env('API_URL') . '/' . session('urlProfileImage') }}" alt="Avatar"
+                            class="w-10 h-10 object-cover rounded-full">
+                    @else
+                        <svg class="w-7 h-7 text-gray-300" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    @endif
+                </div>
+                <span class="text-white font-semibold truncate max-w-[110px] overflow-hidden">
+                    {{ session('nome') ?? 'Usuário' }}
+                </span>
+            </a>
+
+
+
+
+
+            <a href="/logout" title="Sair"
+                class="flex items-center gap-2 px-3 py-1.5 bg-red-600 border-2 border-red-700 rounded-md text-red-200 hover:bg-red-700 hover:border-red-800 transition-colors text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                </svg>
+
+            </a>
+
+        </div>
+
     </aside>
     <!-- Conteúdo -->
     <main class="ml-64 p-8 bg-[#1e1e2e] flex-1">
@@ -114,75 +158,78 @@
                     </div>
                     <div class="border-t-4 border-[#5e60ce] w-full mb-6"></div>
                     <div class="px-6">
-                    @if (!empty($ativos))
-                        <div class="overflow-x-auto">
-                            <table class="table-auto w-full text-left text-sm">
-                                <thead>
-                                    <tr class="text-[#a6accd] border-b border-[#444]">
-                                        <th class="p-2 text-center">Sigla</th>
-                                        <th class="p-2 text-center">Nome</th>
-                                        <th class="p-2 text-center">Cotas</th>
-                                        <th class="p-2 text-center">Preço Médio</th>
-                                        <th class="p-2 text-center">Valor de Mercado</th>
-                                        <th class="p-2 text-center">Valor total</th>
-                                        <th class="p-2 text-center">Variação</th>
-                                        <th class="p-2 text-center">Dividendos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($ativos as $ativo)
-                                        @php
-                                            $valorAplicado = $ativo['valorAplicado'];
-                                            $valorMercado = $ativo['valorAtual'];
-                                            if ($tipo == 'Stocks' || $tipo == 'Reits' || $tipo == 'Criptomoedas') {
-                                                $currency = 'USD';
-                                                $cotas = $ativo['cotasFracionadas'];
-                                            } else {
-                                                $currency = 'BRL';
-                                                $cotas = $ativo['cotas'];
-                                            }
-
-                                            $precoMedio = $valorAplicado / $cotas;
-                                            $lucro = $ativo['lucroPrejuizo'];
-                                            $valorTotal = $valorMercado * $cotas;
-                                            $valorAplicadoTotal = $precoMedio * $cotas;
-                                            $variacao =
-                                                $valorAplicado > 0
-                                                    ? (($valorMercado - $precoMedio) / $precoMedio) * 100
-                                                    : 0;
-                                        @endphp
-                                        <tr class="border-b border-[#444]">
-                                            <td class="p-2 text-center">{{ strtoupper($ativo['sigla']) }}</td>
-                                            <td class="p-2 text-center">{{ $ativo['nome'] }}</td>
-                                            <td class="p-2 text-center">{{ $cotas }}</td>
-                                            <td title="Valor total aplicado: R$ {{ number_format($valorAplicadoTotal, 2, ',', '.') }}"
-                                                class="p-2 relative group cursor-pointer text-center">
-                                                R$ {{ number_format($precoMedio, 2, ',', '.') }}
-                                            </td>
-                                            <td class="p-2 text-center">R$ {{ number_format($valorMercado, 2, ',', '.') }}</td>
-                                            <td class="p-2 text-center">R$ {{ number_format($valorTotal, 2, ',', '.') }}</td>
-                                            <td class="p-2 relative group cursor-pointer text-center">
-                                                <span title="Valor real: R$ {{ number_format($lucro, 2, ',', '.') }}"
-                                                    class="{{ $variacao >= 0 ? 'text-green-400' : 'text-red-400' }}">
-                                                    {{ number_format($variacao, 2, ',', '.') }}%
-                                                </span>
-                                            </td>
-                                            <td class="p-2 text-center">R$
-                                                {{ number_format($ativo['dividendos'], 2, ',', '.') }}</td>
+                        @if (!empty($ativos))
+                            <div class="overflow-x-auto">
+                                <table class="table-auto w-full text-left text-sm">
+                                    <thead>
+                                        <tr class="text-[#a6accd] border-b border-[#444]">
+                                            <th class="p-2 text-center">Sigla</th>
+                                            <th class="p-2 text-center">Nome</th>
+                                            <th class="p-2 text-center">Cotas</th>
+                                            <th class="p-2 text-center">Preço Médio</th>
+                                            <th class="p-2 text-center">Valor de Mercado</th>
+                                            <th class="p-2 text-center">Valor total</th>
+                                            <th class="p-2 text-center">Variação</th>
+                                            <th class="p-2 text-center">Dividendos</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="flex flex-col items-center justify-center py-10">
-                            <p class="text-gray-400 mb-4">Nenhum ativo cadastrado.</p>
-                            <button onclick="abrirModal('{{ $tipo }}')"
-                                class="w-12 h-12 flex items-center justify-center rounded-full bg-[#2e2e3e] text-white border border-[#444] hover:bg-[#252536] text-3xl transition duration-200">
-                                +
-                            </button>
-                        </div>
-                    @endif
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($ativos as $ativo)
+                                            @php
+                                                $valorAplicado = $ativo['valorAplicado'];
+                                                $valorMercado = $ativo['valorAtual'];
+                                                if ($tipo == 'Stocks' || $tipo == 'Reits' || $tipo == 'Criptomoedas') {
+                                                    $currency = 'USD';
+                                                    $cotas = $ativo['cotasFracionadas'];
+                                                } else {
+                                                    $currency = 'BRL';
+                                                    $cotas = $ativo['cotas'];
+                                                }
+
+                                                $precoMedio = $valorAplicado / $cotas;
+                                                $lucro = $ativo['lucroPrejuizo'];
+                                                $valorTotal = $valorMercado * $cotas;
+                                                $valorAplicadoTotal = $precoMedio * $cotas;
+                                                $variacao =
+                                                    $valorAplicado > 0
+                                                        ? (($valorMercado - $precoMedio) / $precoMedio) * 100
+                                                        : 0;
+                                            @endphp
+                                            <tr class="border-b border-[#444]">
+                                                <td class="p-2 text-center">{{ strtoupper($ativo['sigla']) }}</td>
+                                                <td class="p-2 text-center">{{ $ativo['nome'] }}</td>
+                                                <td class="p-2 text-center">{{ $cotas }}</td>
+                                                <td title="Valor total aplicado: R$ {{ number_format($valorAplicadoTotal, 2, ',', '.') }}"
+                                                    class="p-2 relative group cursor-pointer text-center">
+                                                    R$ {{ number_format($precoMedio, 2, ',', '.') }}
+                                                </td>
+                                                <td class="p-2 text-center">R$
+                                                    {{ number_format($valorMercado, 2, ',', '.') }}</td>
+                                                <td class="p-2 text-center">R$
+                                                    {{ number_format($valorTotal, 2, ',', '.') }}</td>
+                                                <td class="p-2 relative group cursor-pointer text-center">
+                                                    <span
+                                                        title="Valor real: R$ {{ number_format($lucro, 2, ',', '.') }}"
+                                                        class="{{ $variacao >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                                                        {{ number_format($variacao, 2, ',', '.') }}%
+                                                    </span>
+                                                </td>
+                                                <td class="p-2 text-center">R$
+                                                    {{ number_format($ativo['dividendos'], 2, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center py-10">
+                                <p class="text-gray-400 mb-4">Nenhum ativo cadastrado.</p>
+                                <button onclick="abrirModal('{{ $tipo }}')"
+                                    class="w-12 h-12 flex items-center justify-center rounded-full bg-[#2e2e3e] text-white border border-[#444] hover:bg-[#252536] text-3xl transition duration-200">
+                                    +
+                                </button>
+                            </div>
+                        @endif
                 </section>
             @endforeach
         </div>
@@ -461,6 +508,7 @@
             }
         });
     </script>
+
 </body>
 
 </html>

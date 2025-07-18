@@ -64,6 +64,7 @@
         volta para a <a href="{{ url()->previous() }}">última página</a>
         ou para o <a href="/menu">menu</a>
         <p><strong>{{ $exception->getMessage() }}</strong></p>
+        <p><a href="/logout">SAIR DO SISTEMA</a></p>
     </div>
 </body>
 

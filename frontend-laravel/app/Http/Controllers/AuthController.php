@@ -53,15 +53,21 @@ class AuthController extends Controller
             'password' => $request->password,
         ]);
         $data = $response->json();
+
         if ($response->successful()) {
 
             session([
                 'email' => $request->email,
                 'logado' => true,
                 'id' => $data['status_res']['id'],
-                'cpf' => $data['status_res']['cpf']
+                'cpf' => $data['status_res']['cpf'],
+                'nome' => explode(' ', $data['status_res']['nomeCompleto'])[0],
+                'urlProfileImage' => $data['status_res']['urlProfileImage'],
+
             ]);
+
             if ($data['status_msg'] == "Login realizado com sucesso, crie uma nova senha.") {
+
                 return redirect('/criar-nova-senha')->with('success', $data['status_msg']);
 
             }

@@ -54,7 +54,7 @@ Este é o frontend do CleanCircuit, uma aplicação web para gestão de investim
 ### Configuração do arquivo .env:
 
 - Defina API_URL para a URL do backend (ex: http://localhost:8080).
-- Defina BRAPI_TOKEN com seu token de acesso à BRAPI, use o token `g3dCqDLPq5MtN8313Nao6R`.
+- Defina BRAPI_TOKEN com seu token de acesso à BRAPI, use o token `g3dCqDLPq5MtN8313Nao6R` caso não consiga gerar um token próprio.
 - O frontend utiliza SQLite por padrão, não sendo necessário configurar banco de dados relacional.
 
 ## Observação sobre o Backend
