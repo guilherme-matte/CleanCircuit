@@ -25,8 +25,7 @@ CleanCircuit é uma aplicação web para gestão de investimentos, composta por 
 
 - **Backend:** Java 21, Spring Boot, Spring Data JPA, PostgreSQL, RabbitMQ, Spring Mail, BRAPI API
 - **Frontend:** Laravel 12, PHP 8.2, Blade, TailwindCSS, Vite
-- **Outros:** Docker (opcional), Composer, NPM/Yarn
-
+  
 ## Como Executar
 
 ### Pré-requisitos
