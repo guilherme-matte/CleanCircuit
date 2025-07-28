@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="780b2a22-b48f-414e-81f1-31f768dd2d59" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/Component/StartupRoutine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/controller/RendaFixaController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/entities/EmissaoEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/entities/RotinaEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/enums/Tipo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/repositories/EmissaoRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/repositories/RotinaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/repositories/specification/EmissaoSpecs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/service/EmissaoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/service/RotinaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/dtos/AtivoDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/dtos/AtivoDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/dtos/AtivoFracionadoDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/dtos/AtivoFracionadoDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/entities/RendaFixaEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-Spring/src/main/java/CC/CleanCircuit/invest/entities/RendaFixaEntity.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="30WBOBCsqnNV1Zlvz1DI3Khv8CF" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="780b2a22-b48f-414e-81f1-31f768dd2d59" name="Changes" comment="" />
+      <created>1753733414587</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1753733414587</updated>
+    </task>
+    <servers />
+  </component>
+</project>

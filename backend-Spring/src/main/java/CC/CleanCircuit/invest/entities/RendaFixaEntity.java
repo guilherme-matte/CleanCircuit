@@ -1,6 +1,9 @@
 package CC.CleanCircuit.invest.entities;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +16,10 @@ public class RendaFixaEntity {
     private String emissor;
     private double cdi;
     private double valorAplicado;
-    private double valorAtual;
+    private double rendimento;
+    private Date dataAplicacao;
+    private Date dataVencimento;
+    
 
     @ManyToOne
     @JoinColumn(name = "investidor_id", referencedColumnName = "id")
@@ -60,12 +66,12 @@ public class RendaFixaEntity {
         this.valorAplicado = valorAplicado;
     }
 
-    public double getValorAtual() {
-        return valorAtual;
+    public double getRendimento() {
+        return rendimento;
     }
 
-    public void setValorAtual(double valorAtual) {
-        this.valorAtual = valorAtual;
+    public void setRendimento(double rendimento) {
+        this.rendimento = rendimento;
     }
 
     public InvestidorEntity getInvestidor() {
@@ -75,4 +81,21 @@ public class RendaFixaEntity {
     public void setInvestidor(InvestidorEntity investidor) {
         this.investidor = investidor;
     }
+
+    public Date getDataAplicacao() {
+        return dataAplicacao;
+    }
+
+    public void setDataAplicacao(Date dataAplicacao) {
+        this.dataAplicacao = System.currentTimeMillis() > dataAplicacao.getTime() ? dataAplicacao : new Date()  ;
+    }
+
+    public Date getDataVencimento() {
+        return dataVencimento;
+    }
+
+    public void setDataVencimento(Date dataVencimento) {
+        this.dataVencimento = dataVencimento;
+    }
+
 }

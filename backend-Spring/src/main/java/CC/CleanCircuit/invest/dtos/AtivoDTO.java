@@ -1,10 +1,32 @@
 package CC.CleanCircuit.invest.dtos;
 
+import CC.CleanCircuit.invest.enums.Tipo;
+
+import java.time.LocalDate;
+
 public class AtivoDTO {
 private String sigla;
 private int cotas;
 private double valorCota;
 private String tipo;//venda ou compra
+private LocalDate dataAplicacao;
+private Tipo tipoAtivo;
+
+    public Tipo getTipoAtivo() {
+        return tipoAtivo;
+    }
+
+    public void setTipoAtivo(Tipo tipoAtivo) {
+        this.tipoAtivo = tipoAtivo;
+    }
+
+    public LocalDate getDataAplicacao() {
+        return dataAplicacao;
+    }
+
+    public void setDataAplicacao(LocalDate dataAplicacao) {
+        this.dataAplicacao = dataAplicacao;
+    }
 
     public String getTipo() {
         return tipo;
