@@ -1,7 +1,5 @@
 package CC.CleanCircuit.entities;
 
-import CC.CleanCircuit.invest.entities.InvestidorEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
