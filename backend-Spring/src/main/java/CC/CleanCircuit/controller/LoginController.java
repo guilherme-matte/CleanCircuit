@@ -11,10 +11,7 @@ import CC.CleanCircuit.services.SenhaService;
 import CC.CleanCircuit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
@@ -29,6 +26,10 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
+    @GetMapping("/status")
+    public ResponseEntity<String> status() {
+        return ResponseEntity.ok("API ONLINE");
+    }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDTO> verificarLogin(@RequestBody LoginDTO dto) {
@@ -37,8 +38,8 @@ public class LoginController {
         }
         UserEntity user = userRepository.findByEmail(dto.getEmail());
 
-        if (user==null){
-            return ApiResponse.resposta(null,"Usuário ou senha incorreto(s)",404);
+        if (user == null) {
+            return ApiResponse.resposta(null, "Usuário ou senha incorreto(s)", 404);
         }
 
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {

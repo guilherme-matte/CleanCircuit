@@ -10,3 +10,4 @@ interface ApiService {
 @POST("/login")
 suspend fun login (@Body loginDTO: LoginDTO): Response<ApiResonseDTO>
 }
+

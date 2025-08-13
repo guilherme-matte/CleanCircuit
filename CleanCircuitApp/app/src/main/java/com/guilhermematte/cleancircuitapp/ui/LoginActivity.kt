@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.guilhermematte.cleancircuitapp.R
+import com.guilhermematte.cleancircuitapp.data.model.Services.StatusService
 import com.guilhermematte.cleancircuitapp.data.model.dtos.LoginDTO
 import com.guilhermematte.cleancircuitapp.data.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -20,7 +21,17 @@ class LoginActivity : AppCompatActivity() {
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
         val loginButton = findViewById<Button>(R.id.loginButton)
+lifecycleScope.launch {
+    val online = StatusService().isApiOnline("http://192.168.15.200:8080")
 
+    if (!online) {
+        Toast.makeText(
+            this@LoginActivity,
+            "API Offline",
+            Toast.LENGTH_LONG
+        ).show()
+        return@launch
+    } }
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
@@ -29,6 +40,8 @@ class LoginActivity : AppCompatActivity() {
 
 
                 lifecycleScope.launch {
+
+
                     try {
                         val response = RetrofitClient.instance.login(loginDTO)
 
