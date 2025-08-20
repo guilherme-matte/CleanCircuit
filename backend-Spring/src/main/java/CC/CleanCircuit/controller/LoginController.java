@@ -1,5 +1,6 @@
 package CC.CleanCircuit.controller;
 
+import CC.CleanCircuit.Component.JwtUtil;
 import CC.CleanCircuit.dtos.LoginDTO;
 import CC.CleanCircuit.dtos.NewPasswordDTO;
 import CC.CleanCircuit.entities.UserEntity;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+
+@RequestMapping(value = "/auth")
 @RestController
 public class LoginController {
 
@@ -25,6 +29,13 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private LoginService loginService;
+
+    private final JwtUtil jwtUtil;
+
+    public LoginController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
 
     @GetMapping("/status")
     public ResponseEntity<String> status() {
@@ -43,9 +54,14 @@ public class LoginController {
         }
 
         if (senhaServices.verificarSenha(dto.getPassword(), user.getSenha())) {
+            String token = jwtUtil.generateToken(user.getEmail());
 
+            LinkedHashMap<String, Object> response = new LinkedHashMap<>();
 
-            return ApiResponse.resposta(user, "Login realizado com sucesso.", 200);
+            response.put("User", user);
+            response.put("token", token);
+
+            return ApiResponse.resposta(response, "Login realizado com sucesso.", 200);
 
 
         }
