@@ -73,8 +73,6 @@ public class MailService {
 
     public void enviarEmailBoasVindas(String email, String nome) {
         try {
-
-
             String conteudo = "<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:#121212; padding: 40px 0;'>"
                     + "<tr><td align='center'><table width='600' cellpadding='0' cellspacing='0' border='0' "
                     + "style='background-color:#2e2e3e; padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; color: #f8f8f2;'>"

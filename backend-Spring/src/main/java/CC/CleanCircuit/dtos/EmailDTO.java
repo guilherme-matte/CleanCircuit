@@ -7,7 +7,7 @@ public class EmailDTO implements Serializable {
     private String assunto;
     private String corpo;
 
-    // Construtor padrão (necessário para desserialização)
+
     public EmailDTO() {
     }
 

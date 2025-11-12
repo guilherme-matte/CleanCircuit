@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "tb_emissao")
 public class EmissaoEntity {
-    //serve para calculo de dividendos
+    //classe usada para calculo de dividendos(nao implementado)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

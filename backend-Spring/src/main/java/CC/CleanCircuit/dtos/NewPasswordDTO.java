@@ -1,8 +1,14 @@
 package CC.CleanCircuit.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class NewPasswordDTO {
+    @Email
     private String email;
+    @NotBlank
     private String token;
+    @NotBlank
     private String newPassword;
 
     public String getEmail() {

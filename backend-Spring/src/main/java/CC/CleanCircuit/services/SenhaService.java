@@ -19,10 +19,4 @@ public class SenhaService {
         return passwordEncoder.matches(senhaDigitada, senhaHash);
     }
 
-    public static String gerarSenha() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[6];
-        random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
 }

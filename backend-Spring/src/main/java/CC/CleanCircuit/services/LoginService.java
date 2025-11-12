@@ -1,5 +1,6 @@
 package CC.CleanCircuit.services;
 
+import CC.CleanCircuit.dtos.LoginDTO;
 import CC.CleanCircuit.entities.UserEntity;
 import CC.CleanCircuit.repositories.UserRepository;
 import CC.CleanCircuit.response.ApiResponse;
@@ -8,14 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Base64;
+import java.util.Random;
 
 @Service
 public class LoginService {
     @Autowired
     private SenhaService senhaService;
-    
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -39,14 +42,44 @@ public class LoginService {
         return ApiResponse.resposta(user, "Senha alterada com sucesso! Faça login novamente.", 200);
     }
 
-    public void gerarTokenResetSenha(UserEntity user) {
-        String token = UUID.randomUUID().toString();
+    public String gerarTokenResetSenha(UserEntity user) {
+        Random random = new SecureRandom();
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
         user.setResetToken(token);
         user.setResetTokenExpiration(LocalDateTime.now().plusHours(1));
         userRepository.save(user);
+        return token;
 
+    }
+
+    public ResponseEntity<ApiResponseDTO> resetarSenha(String email) {
+        UserEntity usuario = userRepository.findByEmail(email);
+        if (usuario == null) {
+            return ApiResponse.resposta(null, "Email não encontrado", 404);
+        }
+        String token = gerarTokenResetSenha(usuario);
         String link = "http://localhost:8000/criar-nova-senha?token=" + token;
-        mailService.enviarEmailResetSenha(user.getEmail(), link);
+        mailService.enviarEmailResetSenha(email, link);
+        return ApiResponse.resposta(null, "Email enviado com sucesso!", 200);
+    }
+
+    public ResponseEntity<ApiResponseDTO> efetuarLogin(LoginDTO dto) {
+        UserEntity user = userRepository.findByEmail(dto.getEmail());
+
+        if (user == null) {
+            return ApiResponse.resposta(null, "Usuário ou senha incorreto(s)", 404);
+        }
+
+        if (senhaService.verificarSenha(dto.getPassword(), user.getSenha())) {
+
+
+            return ApiResponse.resposta(user, "Login realizado com sucesso.", 200);
+
+
+        }
+        return ApiResponse.resposta(null, "Usuário ou senha incorreto(s)", 404);
     }
 }
 

@@ -14,14 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+
 @Service
 public class RendaFixaService {
     @Autowired
     private RendaFixaRepository rendaFixaRepository;
     @Autowired
     private InvestidorRepository investidorRepository;
-
-    private final double cdi = 14.90; // selic - 0,10
 
     @Transactional
     public ResponseEntity<ApiResponseDTO> cadastrarRendaFixa(String cpf, RendaFixaDTO dto) {
@@ -54,12 +53,14 @@ public class RendaFixaService {
 
         List<RendaFixaEntity> rendas = rendaFixaRepository.findAll();
 
+        double cdi = 14.90;    // selic - 0,10
+
         for (RendaFixaEntity r : rendas) {
+
             double taxaAnualTitulo = cdi * (r.getCdi() / 100.0);
             double taxaDiaria = (taxaAnualTitulo / 100.0) / 252.0;
             double rendimento = (r.getValorAplicado() + r.getRendimento()) * taxaDiaria;
             r.setRendimento(r.getRendimento() + rendimento);
-
         }
         rendaFixaRepository.saveAll(rendas);
     }

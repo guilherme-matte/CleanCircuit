@@ -13,19 +13,16 @@
             opacity: 0;
         }
 
-        /* Remove setas dos inputs number (Chrome, Safari, Edge) */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Remove setas dos inputs number (Firefox) */
         input[type=number] {
             -moz-appearance: textfield;
         }
 
-        /* Remove setas do select (apenas aparência, não remove funcionalidade) */
         select::-ms-expand {
             display: none;
         }
@@ -40,7 +37,6 @@
 </head>
 
 <body class="flex min-h-screen text-white bg-[#1e1e2e]">
-    <!-- Alerta de erro -->
     @if ($mensagem)
         <div id="alertaSucesso" class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-md z-50">
             {{ $mensagem }}
@@ -57,7 +53,6 @@
         </script>
     @endif
 
-    <!-- Menu Lateral -->
     <aside
         class="w-64 bg-[#2e2e3e] p-6 space-y-4 fixed top-0 left-0 h-full overflow-y-auto flex flex-col justify-between">
         <div>
@@ -67,14 +62,12 @@
                 </a>
             </h2>
             <nav class="flex flex-col space-y-2 mt-4">
-                <!-- apenas dashboard -->
             </nav>
         </div>
 
-        <!-- USUÁRIO -->
+        <!-- user -->
         <div
             class="flex items-center flex-nowrap gap-3 bg-[#232336] rounded-lg p-3 mt-6 hover:bg-[#35355a] transition relative overflow-hidden select-none">
-            <!-- Foto e nome levam ao perfil -->
             <a href="/perfil" class="flex items-center gap-3 flex-1 min-w-0">
                 <div class="w-10 h-10 rounded-full bg-[#444] flex items-center justify-center overflow-hidden shrink-0">
                     @if (session('urlProfileImage'))
@@ -110,10 +103,8 @@
         </div>
 
     </aside>
-    <!-- Conteúdo -->
     <main class="ml-64 p-8 bg-[#1e1e2e] flex-1">
         <h1 class="text-3xl font-bold mb-6">Resumo da Carteira</h1>
-        <!-- Cards com indicadores -->
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div class="bg-[#2e2e3e] p-6 rounded-xl shadow-md" title="Valor real gasto na carteira">
